@@ -1,0 +1,6 @@
+# OS X Hidden Files
+*.DS_Store
+
+# Node packages
+node_modules
+
