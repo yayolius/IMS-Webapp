@@ -1,70 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <title>IMS App</title>
-        <script src=""></script>
+        <script src="node_modules/angular/angular.min.js"></script>
+        <script src="js/app.js"></script>
+        <link rel="stylesheet" href="styles/login.css">
     </head>
-    <body>
-        <div class="login">
-            <div><img src="" alt="LOGO"></div>
-            <div>
-                <input type="text" placeholder="correo">
-                <input type="password" placeholder="contrase&ntilde;a">
-                <input type="checkbox"><label>Recordarme</label>
-                <button type="submit">Ingresar</button>
-            </div>
-        </div>
+    <body ng-app="ims">
 
-        <div class="app">
-            <header>
-                Industrial MSI - {{client.name}}
-            </header>
-            <nav class="sidebar">
-                <ul>
-                    <li>Dashboard</li>
-                    <li>Dispositivo 1</li>
-                    <li>Dispositivo 2</li>
-                    <li>Configuraci&oacute;n</li>
-                    <li>Salir</li>
-                </ul>
-            </nav>
-
-
-            <section class="body" id="dashboard">
-                <div><h1>Dashboard</h1></div>
-                <div>
-                    <div>Main Graph</div>
-                    <div>
-                        Notificaciones
-                        <table>
-                            <tr>
-                                <td>Chancador 2</td><td>4 minutes ago</td>
-                                <td>Chancador 3</td><td>2 days ago</td>
-                            </tr>
-                        </table>
-                        <button>Ver Todas Las Alertas</button>
-                    </div>
-                </div>
-            </section>
-            
-            <section>
-                <div>
-                    <div>
-                        <h2>Polución</h2>
-                        <div>Graph</div>
-                    </div>
-                    <div>
-                        <h2>Polución</h2>
-                        <div>Graph</div>
-                    </div>
-                </div>
-                <div>
-                    <h2>Polución</h2>
-                    <div>Graph</div>
-                </div>
-            </section>
-
-        </div>
     </body>
 </html>
 
