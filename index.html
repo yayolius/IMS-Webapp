@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="ims">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>IMS App</title>
-        <script src="node_modules/angular/angular.min.js"></script>
-        <script src="js/app.js"></script>
+        
         <link rel="stylesheet" href="styles/login.css">
-    </head>
-    <body ng-app="ims">
+        
+        <script src="node_modules/angular/angular.min.js"></script>
+        <script src="node_modules/angular-route/angular-route.min.js"></script>
+        
+        <script src="js/app.js"></script>
+        <script src="js/controllers.js"></script>
+    </head>    
 
+    <body>
+        <div ng-view></div>
     </body>
 </html>
 
