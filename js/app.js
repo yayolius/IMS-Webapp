@@ -7,6 +7,9 @@ app.config(['$routeProvider', function($routeProvider) {
         templateUrl: 'templates/login.html',
         controller: 'LoginController'
     })
+    .when('/logout', {
+        redirectTo: '/login'
+    })
     .when('/app', {
         templateUrl: 'templates/dashboard.html',
         controller: 'DashboardController'

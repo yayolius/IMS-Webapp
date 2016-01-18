@@ -6,9 +6,12 @@
     <nav class="sidebar-content">
         <ul class="sidebar-list">
             <li><a href="#/app">Dashboard</a></li>
-            <li><a href="">Dispositivo 1</a></li>
-            <li><a href="">Dispositivo 2</a></li>
-            <li><a href="#/config">Configuraci&oacute;n</a></li>
+            
+            <li ng-repeat="device in deviceList">
+                <a href="#/device/{{device.id}}">{{device.name}}</a>
+            </li>
+            
+            <!--<li><a href="#/config">Configuraci&oacute;n</a></li>-->
             <li><a href="#/logout">Salir</a></li>
         </ul>
     </nav>

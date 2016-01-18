@@ -1,26 +1,16 @@
 .sidebar-header {
     background-color: #eee;
+    border-bottom: 1px solid #ccc;
     font-size: 1.4em;
     padding: 14px;
 }
 
 .sidebar-content {
     background-color: #eee;
-    
-    width: 210px;
-}
-
-.sidebar-header {
-    background-color: #eee;
-    font-size: 1.4em;
-    padding: 14px;
-}
-.sidebar-content {
-    background-color: #eee;
-    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     bottom: 0;
     position: absolute;
-    top: 54px;
+    top: 55px;
     width: 220px;
 }
 
@@ -40,6 +30,8 @@
     width: 100%;
 }
 
-.sidebar-list li.__active {
+.sidebar-list a.__active,
+.sidebar-list a:hover {
+    background-color: #f8f8f8;
 }
 
