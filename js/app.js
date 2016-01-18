@@ -1,5 +1,5 @@
 
-var app = angular.module('ims', ['ngRoute', 'imsControllers']);
+var app = angular.module('ims', ['ngRoute', 'imsControllers', 'imsDirectives']);
 
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider

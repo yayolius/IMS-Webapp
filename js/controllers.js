@@ -21,3 +21,7 @@ imsControllers.controller('ConfigController', ['$scope', '$http', function() {
     console.log('ConfigController');
 }]);
 
+imsControllers.controller('SidebarController', ['$scope', function() {
+    console.log('SidebarController');
+}]);
+
