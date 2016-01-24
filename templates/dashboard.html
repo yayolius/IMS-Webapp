@@ -1,21 +1,51 @@
 <sidebar></sidebar>
 
 <section class="content dashboard">
-    <div>
-        <h1>Dashboard</h1>
-    </div>
-    <div>
-        <div>Main Graph</div>
-        <div>
-            Notificaciones
-            <table>
-                <tr>
-                    <td>Chancador 2</td><td>4 minutes ago</td>
-                    <td>Chancador 3</td><td>2 days ago</td>
-                </tr>
-            </table>
-            <button>Ver Todas Las Alertas</button>
+    <header>
+        <h1 class="dashboard-title">Dashboard</h1>
+    </header>
+   
+    <section>
+        <div class="graph-container main">
+            <div class="graph-header">
+                <h2 class="graph-title">
+                    <i class="icon-graph"></i>Titulo Gráfico
+                </h2>
+                <select class="graph-filter">
+                    <option>Filtros</option>
+                    <option>Otro Filtro</option>
+                    <option>Something</option>
+                </select>
+            </div>
+            <div class="graph-body">
+                Here goes a graph.
+            </div>
         </div>
-    </div>
+
+        <div class="graph-container side">
+            <div class="graph-header">
+                <h2 class="graph-title">
+                    <i class="icon-bell"></i>Notificaciones
+                </h2>
+            </div>
+
+            <div class="graph-body">
+                <table class="log">
+                    <tr>
+                        <td class="log-name"><i class="icon-text"></i>Chancador 2</td>
+                        <td class="log-time">4 minutes ago</td>
+                    </tr>
+                    <tr>
+                        <td class="log-name"><i class="icon-text"></i>Chancador 3</td>
+                        <td class="log-time">2 days ago</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="graph-footer">
+                <button class="button">Ver Todas Las Alertas</button>
+            </div>
+        </div>
+    </section>
 </section>
 

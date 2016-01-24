@@ -22,8 +22,17 @@ imsControllers.controller('ConfigController', ['$scope', '$http', function() {
 }]);
 
 imsControllers.controller('SidebarController', ['$scope', '$routeParams', '$filter', function($scope, $routeParams, $filter) {
-    console.log('$routeParams: ', $routeParams);
     console.log('SidebarController');
+
+    var searchDevice = function(deviceId, deviceList) {
+        for (var i = 0; i < deviceList.length; i++) {
+            if (deviceList[i].id == deviceId) {
+                return deviceList[i];
+            }
+        }
+
+        return false;
+    }
 
     // Fake user
     $scope.client = { name: 'Cliente Numero Uno' };
@@ -31,19 +40,25 @@ imsControllers.controller('SidebarController', ['$scope', '$routeParams', '$filt
     // Fake device list
     $scope.deviceList = [{
         id: 0,
+        pollution: 10,
         name: 'Melee'
     },{
         id: 1,
+        pollution: 2.14,
         name: 'Potemkin'
     },{
         id: 9823,
+        pollution: 300,
         name: 'Poltergeist'
     }];
     
     if ($routeParams.deviceId) {
-        var searchDevice = $filter('filter')($scope.deviceList, $routeParams.deviceId);
-        if (searchDevice.length > 0) {
-            $scope.device = searchDevice[0];
+        var deviceId = $routeParams.deviceId;
+        var currentDevice = searchDevice(deviceId, $scope.deviceList);
+        if (currentDevice) {
+            $scope.device = currentDevice;
+        } else {
+            console.log('No device found.');
         }
     } else {
         console.log('no deviceId');

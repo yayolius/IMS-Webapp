@@ -8,3 +8,9 @@ body {
     padding: 20px;
 }
 
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+    padding: 14px;
+}

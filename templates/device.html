@@ -1,21 +1,42 @@
 <sidebar></sidebar>
 
 <section class="content device">
-    <div>
-        <h1>{{device.name}}</h1>
-        <div>
-            <h2>Poluci&oacute;n</h2>
-            <div>Graph</div>
+    <header>
+        <h1 class="dashboard-title">{{device.name}}</h1>
+    </header>
+    
+    <div class="row">
+        <div class="graph-container main">
+            <header class="graph-header">
+                <h2 class="graph-title">Poluci&oacute;n</h2>
+            </header>
+            
+            <div class="graph-body">
+                <div>Last Polution Value:</div>
+                <div>{{device.pollution}}</div>
+            </div>
         </div>
-        <div>
-            <h2>Poluci&oacute;n</h2>
-            <div>Graph</div>
+        <div class="graph-container side">
+            <header class="graph-header">
+                <h2 class="graph-title">Poluci&oacute;n</h2>
+            </header>
+            
+            <div class="graph-body">
+                Graph
+            </div>
         </div>
     </div>
-    
-    <div>
-        <h2>Poluci&oacute;n</h2>
-        <div>Graph</div>
+
+    <div class="row">
+        <div class="graph-container graph-time">
+            <header class="graph-header">
+                <h2 class="graph-title">Poluci&oacute;n</h2>
+            </header>
+
+            <div class="graph-body">
+                <div>Graph</div>
+            </div>
+        </div>
     </div>
 </section>
 
