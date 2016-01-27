@@ -10,7 +10,10 @@ imsControllers.controller('LoginController', ['$scope', '$http', '$routeParams',
 }]);
 
 imsControllers.controller('DashboardController', ['$scope', '$http', function($scope) {
-    console.log('DashboardController');    
+    console.log('DashboardController');
+    if (typeof fakeChart === 'function') {
+        fakeChart();
+    }
 }]);
 
 imsControllers.controller('DeviceController', ['$scope', '$routeParams', function($scope, $routeParams) {
