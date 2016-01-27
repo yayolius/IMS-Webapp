@@ -13,11 +13,18 @@ imsControllers.controller('DashboardController', ['$scope', '$http', function($s
     console.log('DashboardController');
     if (typeof fakeChart === 'function') {
         fakeChart();
+    } else {
+        console.log('No dashboard chart.');
     }
 }]);
 
 imsControllers.controller('DeviceController', ['$scope', '$routeParams', function($scope, $routeParams) {
     console.log('DeviceController');
+    if (typeof fakeDeviceChart === 'function') {
+        fakeDeviceChart();
+    } else {
+        console.log('No device chart.');
+    }
 }]);
 
 imsControllers.controller('ConfigController', ['$scope', '$http', function() {

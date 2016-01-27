@@ -1,6 +1,7 @@
 
 .dashboard-title {
     font-size: 2em;
+    margin-top: 0;
 }
 
 .graph-container {
@@ -80,7 +81,10 @@
 }
 
 .device .graph-time {
-    height: 280px; 
     width: 100%;
 }
 
+.graph-time .graph-body {
+    padding: 0;
+    overflow: hidden;
+}
