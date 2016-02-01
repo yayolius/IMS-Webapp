@@ -11,6 +11,7 @@ imsControllers.controller('LoginController', ['$scope', '$http', '$routeParams',
     UserFactory.login($scope.email, $scope.password).then(function(result) {
       if (result.status === 200) {
         app.user = result.data;
+	app.user.email = $scope.email;
         $cookies.putObject('ims', app.user);
         $location.path('/app');
       } else {

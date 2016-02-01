@@ -19,7 +19,7 @@ imsControllers.controller('SidebarController', ['$scope', '$routeParams', '$filt
   }
 
   // Fake user
-  $scope.client = { name: 'Cliente Numero Uno' };
+  $scope.client = { name: app.user.email};
 
   // Fake device list
   $scope.deviceList = [{
