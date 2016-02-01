@@ -1,29 +1,24 @@
+// Global app var
+var app = angular.module('ims', ['ngRoute', 'ngCookies', 'imsFactories', 'imsControllers', 'imsDirectives']);
+var imsFactories = angular.module('imsFactories', []);
+var imsDirectives = angular.module('imsDirectives', []);
+var imsControllers = angular.module('imsControllers', []);
 
-var app = angular.module('ims', ['ngRoute', 'imsControllers', 'imsDirectives']);
+// Default app parameters
+app.params = {
+  api: {
+    path: 'http://159.203.114.208:3000/api'
+  }
+}
 
-app.config(['$routeProvider', function($routeProvider) {
-    $routeProvider
-    .when('/login', {
-        templateUrl: 'templates/login.html',
-        controller: 'LoginController'
-    })
-    .when('/logout', {
-        redirectTo: '/login'
-    })
-    .when('/app', {
-        templateUrl: 'templates/dashboard.html',
-        controller: 'DashboardController'
-    })
-    .when('/device/:deviceId', {
-        templateUrl: 'templates/device.html',
-        controller: 'DeviceController'
-    })
-    .when('/config', {
-        templateUrl: 'templates/config.html',
-        controller: 'ConfigController'
-    })
-    .otherwise({
-        redirectTo: '/app'
-    })
-}]);
+// Detect if auth
+
+app.run(function($rootScope, $location, $cookies) {
+  var authlessPath = '/login';
+  var user = $cookies.get('ims');
+
+  if (typeof user === 'undefined' && !user && $location.$$path !== authlessPath) {
+    $location.path('/login');
+  }
+});
 

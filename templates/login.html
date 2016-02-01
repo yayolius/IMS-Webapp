@@ -1,15 +1,20 @@
 <!-- Login -->
 <section class="login" ng-controler="LoginControler">
-    <div class="login-container">
-        <header class="login-header">
-            <img class="login-logo" src="" alt="LOGO">
-        </header>
-        <div>
-            <input class="login-input" type="text" placeholder="Correo">
-            <input class="login-input" type="password" placeholder="Password">
-            <input class="login-checkbox" type="checkbox"><label>Recordarme</label>
-            <button class="login-submit" type="submit" ng-click="login()">Ingresar</button>
-        </div>
-    </div>
+  <div class="login-container">
+
+    <header class="login-header">
+      <img class="login-logo" src="" alt="LOGO">
+    </header>
+
+    <form ng-submit="login()">
+      <input ng-model="email" class="login-input" type="text" placeholder="Correo">
+      <input ng-model="password" class="login-input" type="password" placeholder="Password">
+
+      <div class="login-error">{{error}}</div>
+
+      <input class="login-checkbox" type="checkbox"><label>Recordarme</label>
+      <button class="login-submit" type="submit">Ingresar</button>
+    </form>
+  </div>
 </section>
 

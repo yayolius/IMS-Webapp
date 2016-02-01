@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html ng-app="ims">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>IMS App</title>
-        
-        <link rel="stylesheet" href="styles/main.css" />
-        <link rel="stylesheet" href="styles/login.css" />
-        <link rel="stylesheet" href="styles/sidebar.css" />
-        <link rel="stylesheet" href="styles/dashboard.css" />
-        <link rel="stylesheet" href="styles/device.css" />
-        
-        <script src="node_modules/angular/angular.min.js"></script>
-        <script src="node_modules/angular-route/angular-route.min.js"></script>
-        <script src="node_modules/plotly.js/dist/plotly.min.js"></script>
-        
-        <script src="js/app.js"></script>
-        <script src="js/controllers.js"></script>
-        <script src="js/directives.js"></script>
-        
-        <!-- Fake charts 
-            This fake charts should be directives to 
-            follow Angular Style Guides & Best Practices.
-        -->
-        <script src="js/mainChart.js"></script>
-        <script src="js/deviceChart.js"></script>
-    </head>    
+    <title>IMS App</title>
 
-    <body>
-        <div ng-view></div>
-    </body>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/login.css" />
+    <link rel="stylesheet" href="styles/sidebar.css" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+    <link rel="stylesheet" href="styles/device.css" />
+
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+    <script src="node_modules/plotly.js/dist/plotly.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/routes.js"></script>
+
+    <script src="js/factories.js"></script>
+    <script src="js/directives.js"></script>
+
+    <!-- Controllers -->
+    <script src="js/controllers/login.js"></script>
+    <script src="js/controllers/device.js"></script>
+    <script src="js/controllers/sidebar.js"></script>
+    <script src="js/controllers/dashboard.js"></script>
+
+    <!-- Fake charts 
+    This fake charts should be directives to 
+    follow Angular Style Guides & Best Practices.
+    -->
+    <script src="js/mainChart.js"></script>
+    <script src="js/deviceChart.js"></script>
+  </head>
+
+  <body>
+    <div ng-view></div>
+  </body>
 </html>
 

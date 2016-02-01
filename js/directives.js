@@ -1,6 +1,3 @@
-
-var imsDirectives = angular.module('imsDirectives', []);
-
 imsDirectives.directive('sidebar', function() {
     return {
         restrict: 'E',

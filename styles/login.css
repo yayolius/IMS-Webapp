@@ -38,6 +38,12 @@
     width: 300px;
 }
 
+.login-error {
+  color: red;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
 .login-checkbox {
     margin-left: 20px;
     margin-right: 8px;
