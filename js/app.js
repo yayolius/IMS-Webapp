@@ -7,7 +7,8 @@ var imsControllers = angular.module('imsControllers', []);
 // Default app parameters
 app.params = {
   api: {
-    path: 'http://159.203.114.208:3000/api'
+    //path: 'http://159.203.114.208:3000/api'
+    path: 'http://127.0.0.1:3000/api'
   }
 }
 
