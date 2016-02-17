@@ -1,12 +1,7 @@
-# OS X Hidden Files
-*.DS_Store
-
-# Node packages
-node_modules
-
-# vim swap files
-*.swp
-
-# Special files
-*.what
-
+node_modules/
+bower_components/
+coverage/
+.sass-cache/
+.idea/
+.tmp/
+dist/
