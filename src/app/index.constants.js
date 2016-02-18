@@ -5,6 +5,7 @@
   angular
     .module('webapp')
     .constant('malarkey', malarkey)
-    .constant('moment', moment);
+    .constant('moment', moment)
+    .constant('apiURL','http://localhost:8080');
 
 })();

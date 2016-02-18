@@ -26,7 +26,9 @@
     "morrisjs": "~0.5.1",
     "datatables-responsive": "~1.0.3",
     "bootstrap-social": "~4.8.0",
-    "flot.tooltip": "~0.8.4"
+    "flot.tooltip": "~0.8.4",
+    "angular-environment": "^1.0.3",
+    "angular-validation-match": "^1.7.1"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.2"

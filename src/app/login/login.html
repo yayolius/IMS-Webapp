@@ -1,0 +1,42 @@
+ <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h3 class="panel-title">
+                          <img src="assets/images/logo_IMS.png" style="width:40%">
+                        </img>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <form name="form" novalidate role="form">
+                            <fieldset>
+                                 <p class="bg-danger pildorita" ng-show="errorMessage != ''">{{errorMessage}}</p>
+                                
+                                <div class="form-group">
+                                    <input class="form-control" ng-model="email" placeholder="Correo" name="email" type="email"  required="">
+                                    
+                                    <span  class="text-danger" ng-show="form.$submitted && form.email.$error.required">El email es obligatorio</span>
+                                     <span  class="text-danger" ng-show="form.$submitted && form.email.$error.email">El email ingresado es inválido</span>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" ng-model="password" placeholder="Password" name="password" type="password" value="" required="" minlength="5">
+                                    <span class="text-danger" ng-show="form.$submitted && form.password.$error.required">El password es obligatorio</span>
+                                    <span class="text-danger" ng-show="form.$submitted && form.password.$error.minlength">El password debe tener al menos 5 caracteres</span>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input ng-model="rememberme" name="remember" type="checkbox" value="Recordarme">Recordarme
+                                    </label>
+                                </div>
+                            
+                                <input type="submit" ng-click="login()" class="btn btn-lg btn-success btn-block" value="Ingresar" />
+                                <p>&nbsp;</p>
+                                <p class="text-center">No posee una cuenta? <a href="#/register" class="btn btn-xs btn-info">Regístrese</a></p>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
