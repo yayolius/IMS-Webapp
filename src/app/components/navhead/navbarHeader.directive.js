@@ -9,7 +9,7 @@
   function headerNavbar() {
     var directive = {
       restrict: 'E',
-      templateUrl: 'app/components/navbarHeader/navbarHeader.html',
+      templateUrl: 'app/components/navhead/navhead.html',
       scope: {
           creationDate: '='
       },
