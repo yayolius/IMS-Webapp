@@ -7,25 +7,27 @@
 
   /** @ngInject */
   function RegisterController($scope,AuthenticationService) {
-    
-    $scope.email = '';
-    $scope.password = '';
-    $scope.password2 = '';
+   
+    var vm = this;
 
-    $scope.errorMessage = '';
-    $scope.showSuccess = false;
+    vm.email = '';
+    vm.password = '';
+    vm.password2 = '';
 
-    $scope.register = function(ev){
+    vm.errorMessage = '';
+    vm.showSuccess = false;
+
+    vm.register = function(){
 
       if($scope.form.$valid){
-        $scope.errorMessage = '';
-        AuthenticationService.Register($scope.email,$scope.password,function(response){
+        vm.errorMessage = '';
+        AuthenticationService.Register(vm.email,vm.password,function(response){
          
           if( response.hasOwnProperty("success") && response.success === false){
-             $scope.errorMessage = response.message;
+             vm.errorMessage = response.message;
           }
           else if(response.hasOwnProperty("email") && response.hasOwnProperty("id") ){
-            $scope.showSuccess = true;
+            vm.showSuccess = true;
           }
         });
       }

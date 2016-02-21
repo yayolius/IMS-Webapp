@@ -6,24 +6,25 @@
     .controller('LoginController', LoginController);
 
   /** @ngInject */
-  function LoginController($scope,AuthenticationService,$location) {
-    
-    $scope.email = '';
-    $scope.password = '';
-    $scope.rememberme = false;
+  function LoginController($scope,AuthenticationService,$location,$log) {
+    var vm = this;
+    vm.email = '';
+    vm.password = '';
+    vm.rememberme = false;
+    vm.showSuccess = false;
 
-    $scope.errorMessage = '';
+    vm.errorMessage = '';
 
-    $scope.login = function (){
-    	if($scope.form.$valid){
-        $scope.errorMessage = '';
-        AuthenticationService.Login($scope.email,$scope.password,function(response){
-          console.log(response);
+    vm.login = function (){
+      if($scope.form.$valid){
+        vm.errorMessage = '';
+        AuthenticationService.Login(vm.email,vm.password,function(response){
+          $log.debug(response);
           if( response.hasOwnProperty("success") && response.success === false){
-             $scope.errorMessage = response.message;
+             vm.errorMessage = response.message;
           }
           else if(response.hasOwnProperty("id") && response.hasOwnProperty("userId") ){
-            //$scope.showSuccess = true;
+            vm.showSuccess = true;
             $location.path('/');
           }
         });

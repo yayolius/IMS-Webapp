@@ -5,8 +5,8 @@
         .module('webapp')
         .factory('UserService', UserService);
  
-    UserService.$inject = ['$http','apiURL'];
-    function UserService($http,apiURL) {
+    UserService.$inject = ['$http','apiURL','$log'];
+    function UserService($http,apiURL,$log) {
         var service = {};
 
         service.Create = Create;
@@ -60,7 +60,7 @@
         }
  
         function handleError(res) {
-            console.log(res);
+            $log.info(res);
             var messages = [];
             if(res.data && res.data.error && res.data.error.details){
                 for(var index in res.data.error.details.messages){

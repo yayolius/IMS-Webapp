@@ -11,27 +11,26 @@
                     <div class="panel-body">
                         <form name="form" novalidate role="form">
                             <fieldset>
-                                <p class="bg-danger pildorita" ng-show="errorMessage != ''">{{errorMessage}}</p>
-                                <p class="text-center bg-success pildorita" ng-show="showSuccess"><strong>El usuario ha sido creado con éxito</strong>, ya puede <a href="#/login" class="btn btn-xs btn-success">Ingresar aquí</a></p>
+                                <p class="bg-danger pildorita" ng-show="vm.errorMessage != ''">{{errorMessage}}</p>
+                                <p class="text-center bg-success pildorita" ng-show="vm.showSuccess"><strong>El usuario ha sido creado con éxito</strong>, ya puede <a href="#/login" class="btn btn-xs btn-success">Ingresar aquí</a></p>
                                 <div class="form-group">
-                                    <input class="form-control" ng-model="email" placeholder="Correo" name="email" type="email"  required="">
-                                    
+                                    <input class="form-control" ng-model="vm.email" placeholder="Correo" name="email" type="email"  required="">
                                     <span  class="text-danger" ng-show="form.$submitted && form.email.$error.required">El email es obligatorio</span>
-                                     <span  class="text-danger" ng-show="form.$submitted && form.email.$error.email">El email ingresado es inválido</span>
+                                    <span  class="text-danger" ng-show="form.$submitted && form.email.$error.email">El email ingresado es inválido</span>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" ng-model="password" placeholder="Password" name="password" type="password" value="" required="" minlength="5">
+                                    <input class="form-control" ng-model="vm.password" placeholder="Password" name="password" type="password" value="" required="" minlength="5">
                                     <span class="text-danger" ng-show="form.$submitted && form.password.$error.required">El password es obligatorio</span>
                                     <span class="text-danger" ng-show="form.$submitted && form.password.$error.minlength">El password debe tener al menos 5 caracteres</span>
                                 </div>
                                   <div class="form-group">
-                                    <input class="form-control" ng-model="password2" placeholder="Repetir password" name="password2" type="password" value="" required=""  match="password" >
+                                    <input class="form-control" ng-model="vm.password2" placeholder="Repetir password" name="password2" type="password" value="" required=""  match="vm.password" >
                                     <span class="text-danger" ng-show="form.$submitted && form.password2.$error.required">Debe repetir el password</span>
                                     <div  class="text-danger" ng-show="form.$submitted && form.password2.$error.match">Los passwords no coinciden</div>
                                 </div>
                                 
                                 <!-- Change this to a button or input when using this as a form -->
-                                <input type="submit" ng-click="register(user)" class="btn btn-lg btn-success btn-block" value="Registrarme" />
+                                <input type="submit" ng-click="vm.register()" class="btn btn-lg btn-success btn-block" value="Registrarme" />
                                 <p>&nbsp;</p>
                                 <p class="text-center">Ya posee una cuenta? <a href="#/login" class="btn btn-xs btn-info">Ingresar</a></p>
                             </fieldset>

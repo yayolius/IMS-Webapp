@@ -11,26 +11,25 @@
                     <div class="panel-body">
                         <form name="form" novalidate role="form">
                             <fieldset>
-                                 <p class="bg-danger pildorita" ng-show="errorMessage != ''">{{errorMessage}}</p>
+                                 <p class="bg-danger pildorita" ng-show="vm.errorMessage != ''">{{errorMessage}}</p>
                                 
                                 <div class="form-group">
-                                    <input class="form-control" ng-model="email" placeholder="Correo" name="email" type="email"  required="">
-                                    
+                                    <input class="form-control" ng-model="vm.email" placeholder="Correo" name="email" type="email"  required="">
                                     <span  class="text-danger" ng-show="form.$submitted && form.email.$error.required">El email es obligatorio</span>
-                                     <span  class="text-danger" ng-show="form.$submitted && form.email.$error.email">El email ingresado es inválido</span>
+                                    <span  class="text-danger" ng-show="form.$submitted && form.email.$error.email">El email ingresado es inválido</span>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" ng-model="password" placeholder="Password" name="password" type="password" value="" required="" minlength="5">
+                                    <input class="form-control" ng-model="vm.password" placeholder="Password" name="password" type="password" value="" required="" minlength="5">
                                     <span class="text-danger" ng-show="form.$submitted && form.password.$error.required">El password es obligatorio</span>
                                     <span class="text-danger" ng-show="form.$submitted && form.password.$error.minlength">El password debe tener al menos 5 caracteres</span>
                                 </div>
                                 <div class="checkbox">
                                     <label>
-                                        <input ng-model="rememberme" name="remember" type="checkbox" value="Recordarme">Recordarme
+                                        <input ng-model="vm.rememberme" name="remember" type="checkbox" value="Recordarme">Recordarme
                                     </label>
                                 </div>
                             
-                                <input type="submit" ng-click="login()" class="btn btn-lg btn-success btn-block" value="Ingresar" />
+                                <input type="submit" ng-click="vm.login()" class="btn btn-lg btn-success btn-block" value="Ingresar" />
                                 <p>&nbsp;</p>
                                 <p class="text-center">No posee una cuenta? <a href="#/register" class="btn btn-xs btn-info">Regístrese</a></p>
                             </fieldset>
