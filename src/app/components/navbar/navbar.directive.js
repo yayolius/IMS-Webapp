@@ -21,8 +21,18 @@
     return directive;
 
     /** @ngInject */
-    function NavbarController(moment) {
+    function NavbarController(moment, UserService) {
       var vm = this;
+      vm.deviceCount = 0;
+
+      UserService.AllCurrentUserDevices()
+              .then(function (res) {
+                 vm.deviceCount = res.length?res.length:0;
+                 if(vm.deviceCount > 0){
+                    
+                 }
+              });
+
 
       // "vm.creation" is avaible by directive option "bindToController: true"
       vm.relativeDate = moment(vm.creationDate).fromNow();

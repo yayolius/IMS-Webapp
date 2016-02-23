@@ -9,7 +9,7 @@
   function routerConfig($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('home', {
-        url: '/',
+        url: '/dashboard',
         templateUrl: 'app/main/main.html',
         controller: 'MainController',
         controllerAs: 'vm'
@@ -24,6 +24,18 @@
         url: '/register',
         templateUrl: 'app/register/register.html',
         controller: 'RegisterController',
+        controllerAs: 'vm'
+      }) 
+      .state('logout', {
+        url: '/logout',
+        templateUrl: 'app/logout/logout.html',
+        controller: 'LogoutController',
+        controllerAs: 'vm'
+      })
+      .state('devices-assign', {
+        url: '/devices/assign',
+        templateUrl: 'app/assignDevice/assign.device.html',
+        controller: 'DeviceAssignController',
         controllerAs: 'vm'
       });
 

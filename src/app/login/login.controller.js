@@ -25,7 +25,7 @@
           }
           else if(response.hasOwnProperty("id") && response.hasOwnProperty("userId") ){
             vm.showSuccess = true;
-            $location.path('/');
+            $location.path('/dashboard');
           }
         });
       }

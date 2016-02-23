@@ -11,6 +11,7 @@
  
         service.Login = Login;
         service.Register = Register;
+        service.Logout = Logout;
         service.ClearCredentials = ClearCredentials;
         service.ReloadSavedCredentials = ReloadSavedCredentials;
  
@@ -22,14 +23,6 @@
                 .then(function (res) {
                     callback(res);
                 });
-          
- 
-            /* Use this for real authentication
-             ----------------------------------------------*/
-            //$http.post('/api/authenticate', { username: username, password: password })
-            //    .success(function (response) {
-            //        callback(response);
-            //    });
  
         }
  
@@ -42,14 +35,19 @@
                     }
                     callback(response);
                 });
-          
  
-            /* Use this for real authentication
-             ----------------------------------------------*/
-            //$http.post('/api/authenticate', { username: username, password: password })
-            //    .success(function (response) {
-            //        callback(response);
-            //    });
+        }
+
+
+        function Logout(callback) {
+ 
+            UserService.Logout()
+                .then(function (response) {
+                    
+                    ClearCredentials();
+                    
+                    callback(response);
+                });
  
         }
  
@@ -83,7 +81,8 @@
  
         function ClearCredentials() {
             $rootScope.globals = {};
-            $cookies.remove('globals');
+            $cookies.remove('globals.currentUser.sesionId');
+            $cookies.remove('globals.currentUser.userId');
            // $http.defaults.headers.common.Authorization = 'Basic';
         }
     }
