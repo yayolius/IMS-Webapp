@@ -1,5 +1,6 @@
 (function() {
   'use strict';
+  /*global Morris,_ */
   angular
     .module('webapp')
     .controller('DeviceController', DeviceController);
@@ -56,7 +57,6 @@
 
       vm.drawGraphFromTime = function drawGraphFromTime(){
       
-        console.log('drawGraphFromTime');
         DeviceService.GetDataPointsFromDate(vm.device.id, 'day').then(function(response){
           if(response.length === 0){
              vm.hasEmptyDatapoints = true;
@@ -90,7 +90,7 @@
           if(vm.device.alert_treadshot) goals.push(vm.device.alert_treadshot);
 
           if(!vm.deviceGraph && response.length > 0){
-            $("#last-time-chart").text("");
+            angular.element("#last-time-chart").text("");
             vm.deviceGraph =  Morris.Line({
                 element: 'last-time-chart',
                 data: response,
@@ -113,7 +113,7 @@
           else if(vm.deviceGraph && response.length > 0){
             vm.deviceGraph.setData(response);
           }else if(response.length === 0){
-            $("#last-time-chart").text("No existen datos para graficar");
+            angular.element("#last-time-chart").text("No existen datos para graficar");
           }
          
         });
@@ -133,10 +133,11 @@
           var averageValue = _.sumBy(data,'value')/data.length;
           var averageTonelaje = _.sumBy(data,'tonelaje')/data.length;
           var averageLLP = _.sumBy(data,'llp_ds')/data.length;
+           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
-            var totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
+             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
           else
-            var totalHours = 0;
+             totalHours = 0;
           if( isNaN(averageValue) || isNaN(averageTonelaje) || isNaN(averageLLP) || isNaN(totalHours)  ){
             $log.error("Uno de los valores esta vacio, y dio como resultado NaN");
             return 0;

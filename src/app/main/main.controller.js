@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  /*global Morris */
+  /*global Morris,_ */
   angular
     .module('webapp')
     .controller('MainController', MainController);
