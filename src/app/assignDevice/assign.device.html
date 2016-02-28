@@ -89,9 +89,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-4" for="">Ubicacion GPS</label>
+                                            <label class="col-md-4" for="">Ubicacion GPS Latitud</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.deviceGPS" placeholder="Ejemplo: -10.323243232,-32.187450345" name="deviceGPS" type="text">
+                                                <input class="form-control" ng-model="vm.deviceGPS.lat" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Ubicacion GPS Longitud</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.deviceGPS.lng" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -144,6 +150,13 @@
 
                                     <fieldset>
                                         <p>El dispositivo fue agregado con éxito.</p>
+                                        <a ng-href="#/devices/{{vm.deviceId}}" class="btn btn-lg btn-success btn-block">Ver Dispositivo</a>
+                                    </fieldset>
+                                </form>
+                                  <form ng-if="vm.status.screen == 'success-assign'" name="formAssignedSuccess" novalidate role="form"  >
+
+                                    <fieldset>
+                                        <p>El dispositivo fue asignado con éxito.</p>
                                         <a ng-href="#/devices/{{vm.deviceId}}" class="btn btn-lg btn-success btn-block">Ver Dispositivo</a>
                                     </fieldset>
                                 </form>

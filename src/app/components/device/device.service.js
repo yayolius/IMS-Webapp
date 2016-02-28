@@ -14,6 +14,10 @@
         service.findByName = findByName;
         service.GetCurrentUserDevice = GetCurrentUserDevice;
         service.GetDataPointsFromDate = GetDataPointsFromDate;
+        service.GetUserlist = GetUserlist;
+        service.UpdateDevice = UpdateDevice;
+        service.AssignCurrentUserToDevice = AssignCurrentUserToDevice;
+        service.UnAsignCurrentUserToDevice = UnAsignCurrentUserToDevice;
     
         return service;
  
@@ -34,11 +38,27 @@
             return $http.get(apiURL + '/api/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId +"&filter[where][name]="  + encodeURI(name) ).then(handleSuccess, handleError);
         }
 
-         function GetDataPointsFromDate(deviceId, timespan) {
+        function GetDataPointsFromDate(deviceId, timespan) {
             return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/' + timespan + '?access_token=' +  $rootScope.globals.currentUser.sesionId  ).then(handleSuccess, handleError);
         }
 
-     
+        function GetUserlist(deviceId){
+            return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Clients?access_token=' +  $rootScope.globals.currentUser.sesionId  ).then(handleSuccess, handleError);
+        }
+
+        function UpdateDevice(deviceId,data){
+            return $http.put(apiURL + '/api/Devices/'+ deviceId +'?access_token=' +  $rootScope.globals.currentUser.sesionId,data  ).then(handleSuccess, handleError);
+        }
+
+        function AssignCurrentUserToDevice(deviceId){
+            return $http.put(apiURL + '/api/Devices/'+ deviceId +'/Clients/rel/' + $rootScope.globals.currentUser.userId + '?access_token=' +  $rootScope.globals.currentUser.sesionId ).then(handleSuccess, handleError);
+        }
+
+        function UnAsignCurrentUserToDevice(deviceId){
+            return $http.delete(apiURL + '/api/Devices/'+ deviceId +'/Clients/rel/' + $rootScope.globals.currentUser.userId + '?access_token=' +  $rootScope.globals.currentUser.sesionId ).then(handleSuccess, handleError);
+        }
+    
+    
 
  
         // private functions

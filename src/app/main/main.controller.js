@@ -6,81 +6,54 @@
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($log,$timeout,UserService) {
+  function MainController($log,$timeout,UserService,DeviceService) {
       var vm = this;
-      vm.deviceCount = "";
+      vm.deviceCount = 0;
+      vm.datapoints = [];
+      vm.nodata = false;
+
+      var loadedDevices = 0;
+
       UserService.AllCurrentUserDevices()
-                .then(function (res) {
-                   vm.deviceCount = res.length?res.length:0;
-                   if(vm.deviceCount > 0){
-                      initGraph();
-                   }
+                .then(function (devices) {
+                    vm.deviceCount = devices.length;
+                   _.forEach(devices,function(device){
+                        DeviceService.GetDataPointsFromDate(device.id, 'hour').then(function(datapoints){
+                            _.forEach(datapoints,function(point){
+                                var npoint = { datetime: point.datetime };
+                               
+                                npoint[device.id] = point.value;
+                                vm.datapoints.push( npoint );
+                            });
+                            loadedDevices++;
+                            if(loadedDevices == vm.deviceCount){
+                                initGraph(devices);
+                            }
+                        });
+
+                   })
+                   
                 });
 
 
-    function initGraph(){
-        $timeout(function(){
+    function initGraph(devices){
+      
+        if(vm.datapoints.length){
             Morris.Area({
                 element: 'morris-area-chart',
-                data: [{
-                    period: '2010 Q1',
-                    iphone: 8,
-                    ipad: null,
-                    itouch: 3.2
-                }, {
-                    period: '2010 Q2',
-                    iphone: 7.7,
-                    ipad: 3.4,
-                    itouch: 4.2
-                }, {
-                    period: '2010 Q3',
-                    iphone: 7.8,
-                    ipad: 1.2,
-                    itouch: 9.9
-                }, {
-                    period: '2010 Q4',
-                    iphone: 7.8,
-                    ipad: 11.1,
-                    itouch: 10.1
-                }, {
-                    period: '2011 Q1',
-                    iphone: 12.1,
-                    ipad: 9.5,
-                    itouch: 3.2
-                }, {
-                    period: '2011 Q2',
-                    iphone: 2.2,
-                    ipad: 7.6,
-                    itouch: 2.3
-                }, {
-                    period: '2011 Q3',
-                    iphone: 3.6,
-                    ipad: 3.4,
-                    itouch: 4.6
-                }, {
-                    period: '2011 Q4',
-                    iphone: 2.7,
-                    ipad: 8.7,
-                    itouch: 7.8
-                }, {
-                    period: '2012 Q1',
-                    iphone: 4.6,
-                    ipad: 8.8,
-                    itouch: 2.3
-                }, {
-                    period: '2012 Q2',
-                    iphone: 2.8,
-                    ipad: 9.6,
-                    itouch: 4.4
-                }],
-                xkey: 'period',
-                ykeys: ['iphone', 'ipad', 'itouch'],
-                labels: ['Chancador 1', 'Chancador 2', 'Chancador 3'],
-                pointSize: 2,
-                hideHover: 'auto',
+                data: vm.datapoints,
+                xkey: 'datetime',
+                ykeys: _.map(devices, 'id'),
+                labels: _.map(devices, 'name'),
+                pointSize: 0,
+                hideHover: true,
                 resize: true
             });
-        },1000);
+        }else{
+            vm.nodata = true;
+        }
+     
+
     }
 
     

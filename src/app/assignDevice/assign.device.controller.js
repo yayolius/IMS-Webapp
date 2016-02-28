@@ -17,12 +17,14 @@
       vm.deviceId = "";
       vm.deviceName = "";
       vm.deviceType = "polucion-simple";
-      vm.deviceGPS = "";
+      vm.deviceGPS = {lat:"",lng:""};
       vm.deviceMode = "linea-base";
       vm.deviceReadType = "polvo-total";
       vm.deviceLlpDs = "";
       vm.deviceTonelaje = "";
       vm.deviceUmbralAlerta = "";
+
+      vm.sendingDeviceForm = false;
 
 
       vm.status = {
@@ -40,6 +42,7 @@
           
           vm.processingName = false;
           if(response.length == 1){
+             vm.deviceId = response[0].id;
 
               UserService.AllCurrentUserDevices()
               .then(function (res) {
@@ -54,6 +57,8 @@
                       }
                     }
                  }
+
+                
 
                  if(alreadyMine){
                     vm.status.nameFound = true;
@@ -87,7 +92,10 @@
      }
 
      vm.assignNewDevice = function(){
-        
+        DeviceService.AssignCurrentUserToDevice(vm.deviceId).then(function(response){
+           vm.status.screen = "success-assign";
+           $log.info(response);
+        });
      }
 
      vm.saveNewDevice = function(){

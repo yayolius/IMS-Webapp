@@ -28,7 +28,7 @@
                         <h3 class="panel-title">Último valor de la polución (mg/m3)</h3>
                       </div>
                       <div class="panel-body">
-                            <h3 class="text-center text-success">0 (mg/m3)</h3>
+                            <h3 class="text-center text-success">{{vm.device.polucion}} (mg/m3)</h3>
                       </div>
                     </div>
                 </div>
@@ -43,14 +43,22 @@
                     </div>
                 </div>
             </div>
+            <div class="row" ng-if="vm.hasEmptyDatapoints">
+              <div class="col-md-12 ">
+                <h3 class="text-danger text-center">No se han recibido datos en la última hora</h3>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
 
-             <div class="row">
+              </div>
+            </div>
+
+             <div class="row" ng-if="!vm.hasEmptyDatapoints">
                 <div class="col-md-12 ">
                     <div class="panel panel-default">
                       <div class="panel-heading">
                         <h3 class="panel-title">Polución <strong>Última Hora</strong> (mg/m3)</h3>
                        
-                         <div class="pull-right">
+                         <!--div class="pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                     Mostrar por tiempo
@@ -65,7 +73,7 @@
                                     </li>
                                 </ul>
                             </div>
-                         </div>
+                         </div-->
                       </div>
                       <div class="panel-body">
                          <div id="last-time-chart" class="text-center">Cargando gráfico ...</div>
@@ -74,8 +82,9 @@
                 </div>
             </div>
 
+           
 
-            <div class="row" ng-if="vm.markers.length > 0">
+            <div class="row" ng-if="vm.markers.length > 0 && !vm.hasEmptyDatapoints">
                 <div class="col-md-12 ">
                     <div class="panel panel-default">
                       <div class="panel-heading">
@@ -90,6 +99,124 @@
                     </div>
                 </div>
             </div>
+
+
+             <div class="row">
+                
+                <div class="col-md-6 ">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Configuración del Dispositivo</h3>
+                      </div>
+                      <div class="panel-body">
+                            <form name="formUpdateDevice" novalidate role="form"  class="form-horizontal">
+
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Nombre:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.device.name" name="deviceName" readonly="true" type="text"  >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Tipo de sensor</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="deviceType" ng-model="vm.device.type">
+                                                    <option value="polucion-simple">Polución simple</option>
+                                                    <option value="polucion-gps">Polución simple con gps</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Ubicacion GPS Latitud</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.device.gps.lat" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Ubicacion GPS Longitud</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.device.gps.lng" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="col-md-4" for="">Modo de lectura</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="deviceMode" ng-model="vm.device.mode">
+                                                    <option value="linea-base" selected="selected">Linea base</option>
+                                                    <option value="ssp">SSP</option>
+                                                </select>
+                                            </div>
+                                        </div> 
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Tipo de medición</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="deviceReadType" ng-model="vm.device.read_type">
+                                                    <option value="polvo-total"  selected="selected">Polvo Total</option>
+                                                    <option value="pm10">PM10</option>
+                                                    <option value="pm2.5">PM2.5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">LLP DS</label>
+                                           <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.device.llp_ds" placeholder="" name="deviceLlpDs" type="text"  >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Tonelaje</label>
+                                           <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.device.tonelaje" placeholder="" name="deviceTonelaje" type="text"  >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="col-md-4" for="">Umbral de Alerta</label>
+                                           <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.device.alert_treadshot" placeholder="" name="deviceUmbralAlerta" type="text"  >
+                                            </div>
+                                        </div>
+                                                  
+                                        <div class="form-group">
+                                            <input type="submit" ng-disabled="vm.sendingDeviceForm" ng-click="vm.updateDevice()" class="btn btn-lg btn-success btn-block" value="Actualizar configuración" />
+                                        </div>
+                                       
+                                    </fieldset>
+
+                                </form>
+                      </div>
+                    </div>
+                </div>
+
+                 <div class="col-md-6 ">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Email de usuarios asociados a este dispositivo</h3>
+                      </div>
+                      <div class="panel-body">
+                         <ul class="list-group">
+                          <li class="list-group-item" ng-repeat="user in vm.device.users">{{user.email}}</li>
+                         </ul>
+                      </div>
+                    </div>
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Administración</h3>
+                      </div>
+                      <div class="panel-body">
+                        <form name="formUnassignDevice" novalidate role="form"  >
+                          <fieldset>                                                  
+                              <div class="form-group">
+                                  <input type="submit" ng-disabled="vm.sendingDeviceForm"  class="btn btn-lg btn-danger btn-block" value="Remover dispositivo de mi cuenta"  ng-really-message="Esta seguro que desea remover este dispositivo de su cuenta?" ng-really-click="vm.unassignDevice()" />
+                              </div>
+                          </fieldset>
+                        </form>
+                      </div>
+                    </div>
+                </div>
+
+            </div>
+       
 
 
 
