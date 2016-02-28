@@ -4,6 +4,9 @@
                         <li>
                             <a href="#/dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
+                        <li ng-repeat="device in vm.devices track by device.id">
+                            <a ng-href="#/devices/{{device.id}}"><i class="fa fa-bar-chart-o fa-fw"></i> Sensor {{device.name}}<span class="fa arrow"></span></a>
+                        </li>
                         <!--li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Chancador 1<span class="fa arrow"></span></a>
                         </li>

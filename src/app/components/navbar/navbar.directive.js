@@ -24,12 +24,13 @@
     function NavbarController(moment, UserService) {
       var vm = this;
       vm.deviceCount = 0;
+      vm.devices = [];
 
       UserService.AllCurrentUserDevices()
               .then(function (res) {
                  vm.deviceCount = res.length?res.length:0;
                  if(vm.deviceCount > 0){
-                    
+                    vm.devices = res;
                  }
               });
 

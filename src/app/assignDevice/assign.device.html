@@ -27,19 +27,135 @@
                        <div class="panel">
                             
                             <div class="panel-body">
-                                <form name="form" novalidate role="form">
+                                <form ng-if="vm.status.screen == 'name'" name="formName" novalidate role="form">
 
                                     <fieldset>
                                         <p class="bg-danger pildorita" ng-show="vm.errorMessage != ''">{{errorMessage}}</p>
-                                    
+                                        
                                         <div class="form-group">
-                                            <input class="form-control" ng-model="vm.deviceName" placeholder="Identificador del dispositivo" name="deviceName" type="text"  required="">
+                                            <input class="form-control" ng-model="vm.deviceName" placeholder="Identificador del dispositivo" name="deviceName" type="text" minlength="3" required="">
                                             <p><small>Ingrese el identificador del dispositivo que puede encontrar en ...</small></p>
-                                             <input type="submit" ng-click="vm.validateAndAssign()" class="btn btn-lg btn-success btn-block" value="Validar & asignar" />
+                                             <input ng-disabled="!formName.$valid" type="submit" ng-disabled="vm.processingName" ng-click="vm.validateAndAssign()" class="btn btn-lg btn-success btn-block" value="Validar & asignar" />
                                         </div>
                                     </fieldset>
 
                                 </form>
+                                <form ng-if="vm.status.screen == 'confirm'" name="formConfirm" novalidate role="form">
+
+                                    <fieldset ng-if="vm.status.nameNotFound === true">
+                                    
+                                        <div class="form-group">
+                                            <p>El dispositivo <big><strong>{{vm.deviceName}}</strong> <strong class="text-danger">NO FUE ENCONTRADO</strong></big>, esto se puede deber a que el nombre esta mal escrito, o el dispositivo no ha sido creado por ningún usuario en el sistema.</p>
+                                             <div class="col-md-6">
+                                                <input type="submit"  ng-click="vm.createNewDevice()" class="btn btn-success btn-block" value="Agregar dispositivo" />
+                                             </div>
+                                             <div class="col-md-6">
+                                                 <input type="submit"  ng-click="vm.backToName()" class="btn  btn-info btn-block" value="Volver a intentar" />
+                                             </div>
+                                        </div>
+
+                                    </fieldset>
+                                    <fieldset ng-if="vm.status.nameFound === true">
+                                    
+                                        <div class="form-group">
+                                            <p>El dispositivo <big><strong>FUE ENCONTRADO con exito</strong></big>, esto significa que ya fue creado por otro usuario, asignando el dispositivo tendra acceso a sus gráficos y alertas.</p>
+                                             <div class="col-md-6">
+                                                <input type="submit"  ng-click="vm.assignNewDevice()" class="btn btn-lg btn-success btn-block" value="Asignar dispositivo" />
+                                             </div>
+                                             <div class="col-md-6">
+                                                 <input type="submit"  ng-click="vm.backToName()" class="btn btn-lg btn-info btn-block" value="Volver a intentar" />
+                                             </div>
+                                        </div>
+
+                                    </fieldset>
+
+                                </form>
+                                <form ng-if="vm.status.screen == 'create'" name="formCreateDevice" novalidate role="form"  class="form-horizontal">
+
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Nombre:</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.deviceName" name="deviceName" readonly="true" type="text"  >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Tipo de sensor</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="deviceType" ng-model="vm.deviceType">
+                                                    <option value="polucion-simple">Polución simple</option>
+                                                    <option value="polucion-gps">Polución simple con gps</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Ubicacion GPS</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.deviceGPS" placeholder="Ejemplo: -10.323243232,-32.187450345" name="deviceGPS" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="col-md-4" for="">Modo de lectura</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="deviceMode" ng-model="vm.deviceMode">
+                                                    <option value="linea-base" selected="selected">Linea base</option>
+                                                    <option value="ssp">SSP</option>
+                                                </select>
+                                            </div>
+                                        </div> 
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Tipo de medición</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="deviceReadType" ng-model="vm.deviceReadType">
+                                                    <option value="polvo-total"  selected="selected">Polvo Total</option>
+                                                    <option value="pm10">PM10</option>
+                                                    <option value="pm2.5">PM2.5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">LLP DS</label>
+                                           <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.deviceLlpDs" placeholder="" name="deviceLlpDs" type="text"  >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4" for="">Tonelaje</label>
+                                           <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.deviceTonelaje" placeholder="" name="deviceTonelaje" type="text"  >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="col-md-4" for="">Umbral de Alerta</label>
+                                           <div class="col-md-8">
+                                                <input class="form-control" ng-model="vm.deviceUmbralAlerta" placeholder="" name="deviceUmbralAlerta" type="text"  >
+                                            </div>
+                                        </div>
+                                                  
+                                        <div class="form-group">
+                                            <input type="submit" ng-disabled="!formCreateDevice.$valid" ng-click="vm.saveNewDevice()" class="btn btn-lg btn-success btn-block" value="Crear dispositivo" />
+                                        </div>
+                                       
+                                    </fieldset>
+
+                                </form>
+
+                                 <form ng-if="vm.status.screen == 'success-add'" name="formCreatedSuccess" novalidate role="form"  >
+
+                                    <fieldset>
+                                        <p>El dispositivo fue agregado con éxito.</p>
+                                        <a ng-href="#/devices/{{vm.deviceId}}" class="btn btn-lg btn-success btn-block">Ver Dispositivo</a>
+                                    </fieldset>
+                                </form>
+
+                                 <form ng-if="vm.status.screen == 'already-asigned'" name="formCreatedSuccess" novalidate role="form"  >
+
+                                    <fieldset>
+                                        <p>El dispositivo ya pertenece al usuario.</p>
+                                        <a ng-href="#/devices/{{vm.deviceId}}" class="btn btn-lg btn-success btn-block">Ver Dispositivo</a>
+                                    </fieldset>
+                                </form>
+
                             </div>
                             
                        </div>

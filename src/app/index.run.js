@@ -10,7 +10,7 @@
 
   AuthenticationService.ReloadSavedCredentials();
 
-      var call = $rootScope.$on('$locationChangeStart', function (event, next, current ) {
+      var call = $rootScope.$on('$locationChangeStart', function (/*event, next, current*/ ) {
       
       $rootScope.$on( '$destroy', call );
       // redirect to login page if not logged in and trying to access a restricted page

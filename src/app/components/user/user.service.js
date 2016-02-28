@@ -43,7 +43,7 @@
 
 
 
-
+        /*
         function GetAll() {
             return $http.get( apiURL + '/api/Clients').then(handleSuccess, handleError);
         }
@@ -56,8 +56,6 @@
             return $http.get(apiURL + '/api/Clients/' + username).then(handleSuccess, handleError);
         }
  
-        
- 
         function Update(user) {
             return $http.put(apiURL + '/api/Clients/' + user.id, user).then(handleSuccess, handleError);
         }
@@ -65,6 +63,7 @@
         function Delete(id) {
             return $http.delete(apiURL + '/api/Clients/' + id).then(handleSuccess, handleError);
         }
+        */
  
         // private functions
  

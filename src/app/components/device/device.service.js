@@ -10,11 +10,32 @@
         var service = {};
 
         service.All = All;
+        service.CreateCurrentUserDevice = CreateCurrentUserDevice;
+        service.findByName = findByName;
+        service.GetCurrentUserDevice = GetCurrentUserDevice;
+        service.GetDataPointsFromDate = GetDataPointsFromDate;
     
         return service;
  
-        function All(data) {
-            return $http.post(apiURL + '/api/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId , data).then(handleSuccess, handleError);
+
+        function All() {
+            return $http.get(apiURL + '/api/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId).then(handleSuccess, handleError);
+        }
+
+        function CreateCurrentUserDevice(data) {
+            return $http.post(apiURL + '/api/Clients/' + $rootScope.globals.currentUser.userId + '/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId , data).then(handleSuccess, handleError);
+        }
+
+        function GetCurrentUserDevice(deviceId){
+             return $http.get(apiURL + '/api/Clients/' + $rootScope.globals.currentUser.userId + '/Devices/'+ deviceId +'?access_token=' +  $rootScope.globals.currentUser.sesionId ).then(handleSuccess, handleError);
+        }
+
+        function findByName(name) {
+            return $http.get(apiURL + '/api/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId +"&filter[where][name]="  + encodeURI(name) ).then(handleSuccess, handleError);
+        }
+
+         function GetDataPointsFromDate(deviceId, timespan) {
+            return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/' + timespan + '?access_token=' +  $rootScope.globals.currentUser.sesionId  ).then(handleSuccess, handleError);
         }
 
      

@@ -32,12 +32,20 @@
         controller: 'LogoutController',
         controllerAs: 'vm'
       })
+     
       .state('devices-assign', {
         url: '/devices/assign',
         templateUrl: 'app/assignDevice/assign.device.html',
         controller: 'DeviceAssignController',
         controllerAs: 'vm'
-      });
+      })
+      .state('device', {
+        url: '/devices/:deviceId',
+        templateUrl: 'app/device/device.html',
+        controller: 'DeviceController',
+        controllerAs: 'vm'
+      })
+      ;
 
     $urlRouterProvider.otherwise('/login');
   }
