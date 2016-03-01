@@ -106,7 +106,6 @@
                 smooth: false,
                 lineWidth:2,
                 goalStrokeWidth:2,
-                ymax:120,
                 xLabels:['minute']
             });
           }
