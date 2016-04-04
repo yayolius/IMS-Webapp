@@ -83,8 +83,8 @@
                                             <label class="col-md-4" for="">Tipo de sensor</label>
                                             <div class="col-md-8">
                                                 <select class="form-control" name="deviceType" ng-model="vm.deviceType">
-                                                    <option value="polucion-simple">Polución simple</option>
-                                                    <option value="polucion-gps">Polución simple con gps</option>
+                                                    <option value="polucion-simple">Chancado y Correas</option>
+                                                    <option value="polucion-gps">Caminos</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -104,8 +104,8 @@
                                            <label class="col-md-4" for="">Modo de lectura</label>
                                             <div class="col-md-8">
                                                 <select class="form-control" name="deviceMode" ng-model="vm.deviceMode">
-                                                    <option value="linea-base" selected="selected">Linea base</option>
-                                                    <option value="ssp">SSP</option>
+                                                    <option value="linea-base" selected="selected">Sin supresor</option>
+                                                    <option value="ssp">Con supresor</option>
                                                 </select>
                                             </div>
                                         </div> 
@@ -135,6 +135,12 @@
                                            <label class="col-md-4" for="">Umbral de Alerta</label>
                                            <div class="col-md-8">
                                                 <input class="form-control" ng-model="vm.deviceUmbralAlerta" placeholder="" name="deviceUmbralAlerta" type="text"  >
+                                            </div>
+                                        </div>
+                                         <div class="form-group">
+                                           <label class="col-md-4" for="">Auto Supresor</label>
+                                           <div class="col-md-8">
+                                                <input   ng-model="vm.device.auto_supresor" name="deviceAutoSupresor" type="checkbox" > <span>Activado</span>
                                             </div>
                                         </div>
                                                   

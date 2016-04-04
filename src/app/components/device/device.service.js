@@ -18,6 +18,9 @@
         service.UpdateDevice = UpdateDevice;
         service.AssignCurrentUserToDevice = AssignCurrentUserToDevice;
         service.UnAsignCurrentUserToDevice = UnAsignCurrentUserToDevice;
+        service.GetDataPointsSince = GetDataPointsSince;
+        service.getUrlForDownload = getUrlForDownload;
+        service.GetDataBaselinesFromDate = GetDataBaselinesFromDate;
     
         return service;
  
@@ -41,6 +44,13 @@
         function GetDataPointsFromDate(deviceId, timespan) {
             return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/' + timespan + '?access_token=' +  $rootScope.globals.currentUser.sesionId  ).then(handleSuccess, handleError);
         }
+        function GetDataBaselinesFromDate(deviceId, timespan) {
+            return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/' + timespan + '/baselines?access_token=' +  $rootScope.globals.currentUser.sesionId  ).then(handleSuccess, handleError);
+        }
+
+         function GetDataPointsSince(deviceId, datetime) {
+            return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/since?access_token=' +  $rootScope.globals.currentUser.sesionId + '&datetime=' + datetime ).then(handleSuccess, handleError);
+        }
 
         function GetUserlist(deviceId){
             return $http.get(apiURL + '/api/Devices/'+ deviceId +'/Clients?access_token=' +  $rootScope.globals.currentUser.sesionId  ).then(handleSuccess, handleError);
@@ -58,7 +68,9 @@
             return $http.delete(apiURL + '/api/Devices/'+ deviceId +'/Clients/rel/' + $rootScope.globals.currentUser.userId + '?access_token=' +  $rootScope.globals.currentUser.sesionId ).then(handleSuccess, handleError);
         }
     
-    
+        function getUrlForDownload(deviceId,timespan){
+            return  apiURL + '/api/Devices/'+deviceId+'/Datapoints/'+ timespan+'/export?access_token=' + $rootScope.globals.currentUser.sesionId;
+        }
 
  
         // private functions
