@@ -72,11 +72,17 @@
                              {{baseline.to | date:'EEEE dd/MM/y  HH:mm:ss' }}</small>
                            </p>
                         </a>
+                         <h3 class="text-danger text-center" ng-if="vm.availableBaselines.length == 0">No se han recibido datos de linea base en la ultima semana, por favor revisar el dispositivo</h3>
                       </div>
                     </div>
                 </div>
               <div class="col-md-12 " ng-if="vm.hasEmptyDatapoints">
-                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'hour'">No se han recibido datos en la última hora, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a></h3>
+                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'hour'">No se han recibido datos en la última hora, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a>  <br /><br /></h3>
+
+                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == '3hours'">No se han recibido datos en las 3 últimas horas, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a>  <br /><br /></h3>
+
+                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'day'">No se han recibido datos el ultimo dia, por favor revisar el dispositivo <br /><br /></h3>
+
               </div>
             </div>
 

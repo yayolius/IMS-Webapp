@@ -97,6 +97,13 @@
             DeviceService.GetDataBaselinesFromDate(vm.device.id,'week').then(function(baselines){
               console.log("BASELINES:",baselines)
               vm.availableBaselines = baselines;
+              if(vm.availableBaselines == 0){
+                 vm.drawGraphFromTime();
+              }else{
+                vm.currentBaseline = vm.availableBaselines[0];
+                vm.drawGraphFromTime();
+              }
+
             });
 
           }
