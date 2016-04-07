@@ -277,12 +277,7 @@
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
              totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
          
-         /* console.log(
-              "averageValue",averageValue,
-              "averageTonelaje",averageTonelaje,
-              "averageLLP",averageLLP,
-              "totalHours",totalHours
-          );*/
+         
 
           if( isNaN(averageValue) || isNaN(averageTonelaje) || isNaN(averageLLP) || isNaN(totalHours)  ){
             $log.error("Uno de los valores esta vacio, y dio como resultado NaN");
@@ -291,7 +286,16 @@
           }
           if( totalHours * averageTonelaje  === 0) return 0;
           if( (( averageLLP  ) / (  totalHours * averageTonelaje )) === 0) return 0;
-          return Math.floor((1 - ( ( averageValue ) / ( totalHours * averageTonelaje ) ) / ( ( averageLLP  ) / (  totalHours * averageTonelaje ) )*100000))/100000;
+          
+          var output =  Math.floor((1 - ( ( averageValue ) / ( totalHours * averageTonelaje ) ) / ( ( averageLLP  ) / (  totalHours * averageTonelaje ) )*100000))/100000;
+           $log.info(
+              "averageValue",averageValue,
+              "averageTonelaje",averageTonelaje,
+              "averageLLP",averageLLP,
+              "totalHours",totalHours,
+              "response", output
+          );
+          return output;
       }
 
       function getBaseline(){
