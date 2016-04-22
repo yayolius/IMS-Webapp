@@ -125,7 +125,7 @@
           }
 
  
-          $scope.gauge.data[0].y = Math.floor(-1*100*calcular(vm.originalDatapoints));
+          $scope.gauge.data[0].y = 100*calcular(vm.originalDatapoints);
 
           var baseline = getBaseline();
 
@@ -219,7 +219,7 @@
               }
             });
 
-            $scope.gauge.data[0].y =  Math.floor(-1*100*calcular(vm.originalDatapoints));
+            $scope.gauge.data[0].y =  100*calcular(vm.originalDatapoints);
 
             var baseline = getBaseline();
 
@@ -296,11 +296,29 @@
           if( totalHours * averageTonelaje  === 0) return 0;
           if( (( averageBaseline  ) / (  totalHours * averageTonelaje )) === 0) return 0;
           
-          var output =  Math.floor((1 - ( ( averageValue ) / ( totalHours * averageTonelaje ) ) / ( ( averageBaseline  ) / (  totalHours * averageTonelaje ) )*100000))/100000;
+          var output =  Math.floor( 
+                                    (
+                                        1 - 
+                                          ( ( averageValue    ) / ( totalHours * averageTonelaje ) )
+                                                                / 
+                                          ( ( averageBaseline ) / (  totalHours * averageTonelaje ) ) 
+
+                                    ) * 100000
+                                  )
+                                  / 
+                                  100000;
+          
+          $log.info(
+              ( averageBaseline  ) / (  totalHours * averageTonelaje ),
+              (  totalHours * averageTonelaje ),
+              ( averageValue ) / ( totalHours * averageTonelaje ),
+              ( totalHours * averageTonelaje )
+          );
            $log.info(
+
               "averageValue",averageValue,
               "averageTonelaje",averageTonelaje,
-              "averageLLP",averageBaseline,
+              "averageBaseline",averageBaseline,
               "totalHours",totalHours,
               "response", output
           );
