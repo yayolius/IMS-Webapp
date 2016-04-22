@@ -247,30 +247,39 @@
       
       function calcular(dataset){
 
-          var baseline_values =  _.reject(dataset, function(o) { return o.value || o.value === 0; });
-
-
-          var baseline_data = _.cloneDeep(baseline_values);
-          baseline_data = _.sortBy(baseline_data, 'value');
-          var baseline_tenPercent = Math.floor(baseline_data.length*0.1);
-          baseline_data.splice(0,baseline_tenPercent);
-          baseline_data.splice(-1,baseline_tenPercent);
-
-
           var values =  _.reject(dataset, function(o) { return o.value_baseline || o.value_baseline === 0; });
-
-
+          var dataObjArr = _.cloneDeep(values);
           var data = _.cloneDeep(values);
-          data = _.sortBy(data, 'value');
-          var tenPercent = Math.floor(data.length*0.1);
-          data.splice(0,tenPercent);
-          data.splice(-1,tenPercent);
 
-          var sortedByDatetimeData = _.sortBy(data,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
-          var averageValue = _.sumBy(data,'value')/data.length;
-          var averageTonelaje = _.sumBy(data,'tonelaje')/data.length;
+          data = _.map(data, 'value');
+          data = data.sort(function(a, b){return a-b; });
+
+          var percentil10 = Math.round(percentile(data,0.1)*100)/100; 
+          var percentil90 = Math.round(percentile(data,0.90)*100)/100;
+
+          var filtered = [];
+        
+          for(var index in data){
+            var s = data[index];
+            if(s >= percentil10 && s < percentil90){
+               filtered.push(s);
+            } 
+          }
+
+          var sum = 0;
+          filtered.forEach(function(item){
+            sum = item + sum;
+          });
+
+          var averageValue = sum/filtered.length;
+
+
+
+          var sortedByDatetimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
+
+          var averageTonelaje = _.sumBy(dataObjArr,'tonelaje')/dataObjArr.length;
           
-          var averageLLP = getBaseline();
+          var averageBaseline = getBaseline();
             
 
           var totalHours = 0;
@@ -279,19 +288,19 @@
          
          
 
-          if( isNaN(averageValue) || isNaN(averageTonelaje) || isNaN(averageLLP) || isNaN(totalHours)  ){
+          if( isNaN(averageValue) || isNaN(averageTonelaje) || isNaN(averageBaseline) || isNaN(totalHours)  ){
             $log.error("Uno de los valores esta vacio, y dio como resultado NaN");
-            $log.error("isNaN(averageValue)",isNaN(averageValue),"isNaN(averageTonelaje)",isNaN(averageTonelaje),"isNaN(averageLLP ",isNaN(averageLLP),"isNaN(totalHours)",isNaN(totalHours));
+            $log.error("isNaN(averageValue)",isNaN(averageValue),"isNaN(averageTonelaje)",isNaN(averageTonelaje),"isNaN(averageBaseline ",isNaN(averageBaseline),"isNaN(totalHours)",isNaN(totalHours));
             return 0;
           }
           if( totalHours * averageTonelaje  === 0) return 0;
-          if( (( averageLLP  ) / (  totalHours * averageTonelaje )) === 0) return 0;
+          if( (( averageBaseline  ) / (  totalHours * averageTonelaje )) === 0) return 0;
           
-          var output =  Math.floor((1 - ( ( averageValue ) / ( totalHours * averageTonelaje ) ) / ( ( averageLLP  ) / (  totalHours * averageTonelaje ) )*100000))/100000;
+          var output =  Math.floor((1 - ( ( averageValue ) / ( totalHours * averageTonelaje ) ) / ( ( averageBaseline  ) / (  totalHours * averageTonelaje ) )*100000))/100000;
            $log.info(
               "averageValue",averageValue,
               "averageTonelaje",averageTonelaje,
-              "averageLLP",averageLLP,
+              "averageLLP",averageBaseline,
               "totalHours",totalHours,
               "response", output
           );
@@ -304,6 +313,45 @@
         else
           return 0;
       }
+
+
+
+      function percentile(arr, p) {
+        if (arr.length === 0) return 0;
+        if (typeof p !== 'number') throw new TypeError('p must be a number');
+        if (p <= 0) return arr[0];
+        if (p >= 1) return arr[arr.length - 1];
+
+        var index = arr.length * p,
+            lower = Math.floor(index),
+            upper = lower + 1,
+            weight = Math.floor((index % 1)*100)/100;
+      
+     
+
+        if (upper >= arr.length){ return arr[lower]; }
+     
+      
+      
+        return arr[lower] * (1 - weight) + arr[upper] * weight;
+      }
+
+      // Returns the percentile of the given value in a sorted numeric array.
+      function percentRank(arr, v) {
+        if (typeof v !== 'number') throw new TypeError('v must be a number');
+        for (var i = 0, l = arr.length; i < l; i++) {
+            if (v <= arr[i]) {
+                while (i < l && v === arr[i]) i++;
+                if (i === 0) return 0;
+                if (v !== arr[i-1]) {
+                    i += (v - arr[i-1]) / (arr[i] - arr[i-1]);
+                }
+                return i / l;
+            }
+        }
+        return 1;
+      }
+
   }
 
 
