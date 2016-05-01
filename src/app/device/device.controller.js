@@ -7,7 +7,41 @@
 
   /** @ngInject */
   function DeviceController($scope,$log,DeviceService,$stateParams,$location,$filter) {
-      
+     
+      function getPercentile(data, percentile) {
+        var p;
+        /**
+        * Converts percentile to decimal if necessary
+        **/
+        if (0 < percentile && percentile < 1) {
+            p = percentile;
+        } else if (0 < percentile && percentile <= 100) {
+            p = percentile * 0.01;
+        } else {
+            return false;
+        }
+     
+        var numItems = data.length;
+        var allIndex = (numItems-1)*p;
+        var intIndex = parseInt(allIndex);
+        var floatVal = allIndex - intIndex;
+        var sortedData = data.sort(function(a, b) {
+            return a - b;
+        });
+        var cutOff = 0;
+        if(floatVal % 1 === 0) {
+            cutOff = sortedData[intIndex];
+        } else {
+            if (numItems > intIndex+1) {
+                cutOff = floatVal*(sortedData[intIndex+1] - sortedData[intIndex]) + sortedData[intIndex];
+            } else {
+                cutOff = sortedData[intIndex];
+            }
+        }
+        return cutOff;
+      }
+
+
       var vm = this;
 
       vm.device = { name: ""};
@@ -22,6 +56,28 @@
       vm.availableBaselines = [];
       vm.currentBaseline = null;
 
+      vm.mainGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+      vm.filteredGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+
+      vm.baselineGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+
+      vm.filteredBaselineGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
 
 
       $scope.gauge = {
@@ -52,8 +108,54 @@
           vm.drawGraphFromTime();
         }else{
           vm.currentBaseline = bsline;
-          getLast();
+          getLast(); 
         }
+
+        logCurrentBaseline();
+
+      }
+
+      function logCurrentBaseline(){
+        console.log("XXXX",vm.currentBaseline);
+        if(vm.currentBaseline.allvalues){
+          vm.baselineGrid.data = vm.currentBaseline.allvalues;
+
+          var values =  _.reject(vm.baselineGrid.data, function(o) { return o.value || o.value === 0; });
+          var dataObjArr = _.cloneDeep(values);
+          var data = _.cloneDeep(values);
+          var filteredData = [];
+
+          data = _.map(data, 'value_baseline');
+          data = data.sort(function(a, b){return a-b; });
+
+          var percentil10 = Math.round(getPercentile(data,10)*100)/100; 
+          var percentil90 = Math.round(getPercentile(data,90)*100)/100;
+
+          var filtered = [];
+        
+          for(var index in data){
+            var s = data[index];
+            if(s >= percentil10 && s < percentil90){
+               filtered.push(s);
+               filteredData.push(dataObjArr[index]);
+            } 
+          }
+
+          var sum = 0;
+          filtered.forEach(function(item){
+            sum = item + sum;
+          });
+
+          var averageValue = sum/filtered.length;
+
+          vm.filteredBaselineGrid.data = filteredData;
+          vm.filteredBaselineGrid.p10 = percentil10;
+          vm.filteredBaselineGrid.p90 = percentil90;
+          vm.filteredBaselineGrid.sum = sum;
+          vm.filteredBaselineGrid.averageValue = averageValue;
+
+        }
+
       }
 
 
@@ -98,10 +200,13 @@
               console.log("BASELINES:",baselines)
               vm.availableBaselines = baselines;
               if(vm.availableBaselines == 0){
+                console.log(1);
                  vm.drawGraphFromTime();
               }else{
+                console.log(2);
                 vm.currentBaseline = vm.availableBaselines[0];
                 vm.drawGraphFromTime();
+                logCurrentBaseline();
               }
 
             });
@@ -114,21 +219,24 @@
         //angular.element("#last-time-chart").text("cargando");
         DeviceService.GetDataPointsFromDate(vm.device.id, vm.viewTimespan ).then(function(response){
           
+
+          vm.mainGrid.data = response;
           
           vm.originalDatapoints = _.cloneDeep(response);
           
           vm.datapoints = response;
         
          
-          if(vm.datapoints.length === 0){
-             return vm.hasEmptyDatapoints = true;
-          }
 
- 
-          $scope.gauge.data[0].y = 100*calcular(vm.originalDatapoints);
+          //if(vm.datapoints.length === 0){
+           //  return vm.hasEmptyDatapoints = true;
+          //}
+
+            $scope.gauge.data[0].y = 100*calcular(vm.originalDatapoints);
 
           var baseline = getBaseline();
 
+         
           _.remove(vm.datapoints, function(point){  return point.value_baseline || point.value_baseline === 0; });
 
           vm.lastPolutionVal = _.last(vm.datapoints).value;
@@ -250,6 +358,7 @@
           var values =  _.reject(dataset, function(o) { return o.value_baseline || o.value_baseline === 0; });
           var dataObjArr = _.cloneDeep(values);
           var data = _.cloneDeep(values);
+          var filteredData = [];
 
           data = _.map(data, 'value');
           data = data.sort(function(a, b){return a-b; });
@@ -263,6 +372,7 @@
             var s = data[index];
             if(s >= percentil10 && s < percentil90){
                filtered.push(s);
+               filteredData.push(dataObjArr[index]);
             } 
           }
 
@@ -274,8 +384,9 @@
           var averageValue = sum/filtered.length;
 
 
+          //calcular el min y max con datos filtrados, no a los datos raw
 
-          var sortedByDatetimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
+          var sortedByDatetimeData = _.sortBy(filteredData,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
 
           var averageTonelaje = _.sumBy(dataObjArr,'tonelaje')/dataObjArr.length;
           
@@ -285,7 +396,15 @@
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
              totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
-         
+       
+          vm.filteredGrid.p10 = percentil10;
+          vm.filteredGrid.p90 = percentil90;
+          vm.filteredGrid.sum = sum;
+          vm.filteredGrid.data = filteredData;
+          vm.filteredGrid.averageValue = averageValue;
+          vm.filteredGrid.averageTonelaje = averageTonelaje;
+          vm.filteredGrid.averageBaseline = averageBaseline;
+          vm.filteredGrid.totalHours = totalHours;
          
 
           if( isNaN(averageValue) || isNaN(averageTonelaje) || isNaN(averageBaseline) || isNaN(totalHours)  ){
@@ -308,20 +427,8 @@
                                   / 
                                   100000;
           
-          $log.info(
-              ( averageBaseline  ) / (  totalHours * averageTonelaje ),
-              (  totalHours * averageTonelaje ),
-              ( averageValue ) / ( totalHours * averageTonelaje ),
-              ( totalHours * averageTonelaje )
-          );
-           $log.info(
+          vm.filteredGrid.indicador = output;
 
-              "averageValue",averageValue,
-              "averageTonelaje",averageTonelaje,
-              "averageBaseline",averageBaseline,
-              "totalHours",totalHours,
-              "response", output
-          );
           return output;
       }
 
@@ -334,38 +441,7 @@
 
 
 
-      function getPercentile(data, percentile) {
-        var p;
-        /**
-        * Converts percentile to decimal if necessary
-        **/
-        if (0 < percentile && percentile < 1) {
-            p = percentile;
-        } else if (0 < percentile && percentile <= 100) {
-            p = percentile * 0.01;
-        } else {
-            return false;
-        }
-     
-        var numItems = data.length;
-        var allIndex = (numItems-1)*p;
-        var intIndex = parseInt(allIndex);
-        var floatVal = allIndex - intIndex;
-        var sortedData = data.sort(function(a, b) {
-            return a - b;
-        });
-        var cutOff = 0;
-        if(floatVal % 1 === 0) {
-            cutOff = sortedData[intIndex];
-        } else {
-            if (numItems > intIndex+1) {
-                cutOff = floatVal*(sortedData[intIndex+1] - sortedData[intIndex]) + sortedData[intIndex];
-            } else {
-                cutOff = sortedData[intIndex];
-            }
-        }
-        return cutOff;
-    }
+      
 
   }
 

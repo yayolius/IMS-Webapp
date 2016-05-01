@@ -133,6 +133,90 @@
                 </div>
             </div>
 
+
+            <div class="row">
+                <h2>Datapoints</h2>
+                <div class="col-md-12">
+                   <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Cálculo de optimización</h3>
+                    </div>
+                    <div class="panel-body">
+                   <p style="white-space: pre; margin:0; "> 
+                          1 -  ( ( PromedioDeValores    ) / ( HorasTotales * TonelajePromedio ) )  /  ( ( PromedioDeBaselines ) / (  HorasTotales * TonelajePromedio ) ) </p> 
+                    <p style="white-space: pre; margin:0;"> 
+                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) ) </p>
+                    <p style="white-space: pre; margin:0;"> 
+                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )</p>
+                    <p style="white-space: pre; margin:0;"> 
+                          1 -  (  {{vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}   /   {{vm.filteredBaselineGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}  )</p>
+                    <p style="white-space: pre; margin:0;"> 
+                          1 -  (  {{ (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  )</p>
+                    <p style="white-space: pre;"> 
+                          <strong>Total:</strong>   {{ 1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje)) }} o ajustado {{vm.filteredGrid.indicador}} </p>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datapoints</h3>
+                    </div>
+                    <div class="panel-body">
+                      <div class="data">
+                        <ul>
+                          <li>Percentil 10: {{vm.filteredGrid.p10}}</li>
+                          <li>Percentil 90: {{vm.filteredGrid.p90}}</li>
+                          <li>Suma: {{vm.filteredGrid.sum}}</li>
+                          <li>Promedio: {{vm.filteredGrid.averageValue}}</li>
+                        </ul>
+                      </div>
+                      <div id="grid1" ui-grid="vm.mainGrid" ></div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">Datos filtrados y procesados</h3>
+                    </div>
+                    <div class="panel-body">
+                      <div id="grid2" ui-grid="vm.filteredGrid" ></div>
+                    </div>
+                  </div>
+
+                </div>
+            
+                 <div class="col-md-6 ">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Baseline</h3>
+                      </div>
+                      <div class="panel-body">
+                        <div class="data">
+                          <ul>
+                            <li>Percentil 10: {{vm.filteredBaselineGrid.p10}}</li>
+                            <li>Percentil 90: {{vm.filteredBaselineGrid.p90}}</li>
+                            <li>Suma: {{vm.filteredBaselineGrid.sum}}</li>
+                            <li>Promedio: {{vm.filteredBaselineGrid.averageValue}}</li>
+                          </ul>
+                        </div>
+                        <div id="grid2" ui-grid="vm.baselineGrid" ></div>
+                      </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Datos filtrados y procesados</h3>
+                      </div>
+                      <div class="panel-body">
+                        <div id="grid2" ui-grid="vm.filteredBaselineGrid" ></div>
+                      </div>
+                    </div>
+
+                </div>
+            </div>
+
            
 
             <div class="row" ng-if="vm.markers.length > 0 && !vm.hasEmptyDatapoints">
