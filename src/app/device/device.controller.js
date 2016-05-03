@@ -148,12 +148,24 @@
 
           var averageValue = sum/filtered.length;
 
+
+
+          var sortedByDatetimeData = _.sortBy(filteredData,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
+
+         
+            
+
+          var totalHours = 0;
+          if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
+             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
+       
+
           vm.filteredBaselineGrid.data = filteredData;
           vm.filteredBaselineGrid.p10 = percentil10;
           vm.filteredBaselineGrid.p90 = percentil90;
           vm.filteredBaselineGrid.sum = sum;
           vm.filteredBaselineGrid.averageValue = averageValue;
-
+          vm.filteredBaselineGrid.totalHours = totalHours;
         }
 
       }
@@ -232,7 +244,10 @@
            //  return vm.hasEmptyDatapoints = true;
           //}
 
-            $scope.gauge.data[0].y = 100*calcular(vm.originalDatapoints);
+          calcular(vm.originalDatapoints);
+          var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) 
+
+          $scope.gauge.data[0].y  = 100*calc;
 
           var baseline = getBaseline();
 
@@ -327,8 +342,12 @@
               }
             });
 
-            $scope.gauge.data[0].y =  100*calcular(vm.originalDatapoints);
+ 
 
+          calcular(vm.originalDatapoints);
+          var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) 
+          $scope.gauge.data[0].y  = 100*calc;
+          
             var baseline = getBaseline();
 
             if(response.length > 0) {

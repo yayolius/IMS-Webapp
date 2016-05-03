@@ -143,17 +143,18 @@
                     </div>
                     <div class="panel-body">
                    <p style="white-space: pre; margin:0; "> 
-                          1 -  ( ( PromedioDeValores    ) / ( HorasTotales * TonelajePromedio ) )  /  ( ( PromedioDeBaselines ) / (  HorasTotales * TonelajePromedio ) ) </p> 
+                          1 -  ( ( PromedioDeValores    ) / ( HorasTotales * TonelajePromedio ) )  /  ( ( PromedioDeBaselines ) / (  HorasTotalesBaseline * TonelajePromedio ) ) </p> 
+
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) ) </p>
+                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredBaselineGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) ) </p>
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )</p>
+                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )</p>
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  (  {{vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}   /   {{vm.filteredBaselineGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}  )</p>
+                          1 -  (  {{vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}   /   {{vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje) }}  )</p>
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  (  {{ (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  )</p>
+                          1 -  (  {{ (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  )</p>
                     <p style="white-space: pre;"> 
-                          <strong>Total:</strong>   {{ 1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje)) }} o ajustado {{vm.filteredGrid.indicador}} </p>
+                          <strong>Total:</strong>   {{ 1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  </p>
 
                     </div>
                   </div>
