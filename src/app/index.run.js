@@ -8,7 +8,7 @@
   /** @ngInject */
   function runBlock($log,$rootScope, $location, $cookies, $http,AuthenticationService) {
 
-  AuthenticationService.ReloadSavedCredentials();
+      AuthenticationService.ReloadSavedCredentials();
 
       var call = $rootScope.$on('$locationChangeStart', function (/*event, next, current*/ ) {
       

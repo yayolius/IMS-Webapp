@@ -8,6 +8,66 @@
   /** @ngInject */
   function DeviceController($scope,$log,DeviceService,$stateParams,$location,$filter) {
      
+
+      var vm = this;
+
+      vm.device = { name: ""};
+      vm.deviceGraph = null;
+      vm.markers = [];
+      vm.hasEmptyDatapoints = false;
+      vm.datapoints = [];
+      vm.reloadTime = 10*1000;
+      vm.loadTimeout = null;
+      vm.viewTimespan = 'hour';
+      vm.lastPolutionVal = 0;
+      vm.availableBaselines = [];
+      vm.currentBaseline = null;
+
+      vm.mainGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+
+      vm.filteredGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+
+      vm.baselineGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+
+      vm.filteredBaselineGrid = {
+        enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true
+      };
+
+      $scope.gauge = {
+                          columns: 
+                              [{
+                                  id: "y", // must give it a index
+                                  name: "cpu",
+                                  type: "gauge"
+                              }],   // must be array
+                          data: 
+                               [{ y: 0 }]  // must be array
+                  };
+
+      vm.map = { center: { latitude: 0, longitude:0 }, zoom: 13, bounds: {  } , options:{ scrollwheel: false } };
+
+      vm.slider = {
+        value: 0,
+        options: {
+          stepsArray:["Baja","Media","Alta"],
+          disabled: false
+        }
+      };
+
       function getPercentile(data, percentile) {
         var p;
         /**
@@ -41,67 +101,6 @@
         return cutOff;
       }
 
-
-      var vm = this;
-
-      vm.device = { name: ""};
-      vm.deviceGraph = null;
-      vm.markers = [];
-      vm.hasEmptyDatapoints = false;
-      vm.datapoints = [];
-      vm.reloadTime = 10*1000;
-      vm.loadTimeout = null;
-      vm.viewTimespan = 'hour';
-      vm.lastPolutionVal = 0;
-      vm.availableBaselines = [];
-      vm.currentBaseline = null;
-
-      vm.mainGrid = {
-        enableFiltering: true,
-        showGridFooter: true,
-        showColumnFooter: true
-      };
-      vm.filteredGrid = {
-        enableFiltering: true,
-        showGridFooter: true,
-        showColumnFooter: true
-      };
-
-      vm.baselineGrid = {
-        enableFiltering: true,
-        showGridFooter: true,
-        showColumnFooter: true
-      };
-
-      vm.filteredBaselineGrid = {
-        enableFiltering: true,
-        showGridFooter: true,
-        showColumnFooter: true
-      };
-
-
-      $scope.gauge = {
-                          columns: 
-                              [{
-                                  id: "y", // must give it a index
-                                  name: "cpu",
-                                  type: "gauge"
-                              }],   // must be array
-                          data: 
-                               [{ y: 0 }]  // must be array
-                  };
-
-      vm.map = { center: { latitude: 0, longitude:0 }, zoom: 13, bounds: {  } , options:{ scrollwheel: false } };
-
-
-      vm.slider = {
-        value: 0,
-        options: {
-          stepsArray:["Baja","Media","Alta"],
-          disabled: false
-        }
-      };
-
       vm.selectBaseline = function(bsline){
         if(!vm.currentBaseline){
           vm.currentBaseline = bsline;
@@ -112,7 +111,6 @@
         }
 
         logCurrentBaseline();
-
       }
 
       function logCurrentBaseline(){
@@ -167,9 +165,7 @@
           vm.filteredBaselineGrid.averageValue = averageValue;
           vm.filteredBaselineGrid.totalHours = totalHours;
         }
-
       }
-
 
       vm.updateDevice = function(){
           vm.sendingDeviceForm = true;
@@ -179,7 +175,7 @@
           })
       }
 
-       vm.unassignDevice = function(){
+      vm.unassignDevice = function(){
           vm.sendingDeviceForm = true;
           DeviceService.UnAsignCurrentUserToDevice($stateParams.deviceId,vm.device).then(function(response){
             $log.info(response);
@@ -326,9 +322,7 @@
           },vm.reloadTime);
          
         });
-        
       }
-
 
       function getLast(){
             
@@ -361,7 +355,6 @@
             },vm.reloadTime);
 
          });
-
       }
 
       vm.updateTimespan = function(newTimespan){
@@ -369,7 +362,6 @@
         clearTimeout(vm.loadTimeout);
         vm.viewTimespan = newTimespan;
         vm.drawGraphFromTime();
-
       }
       
       function calcular(dataset){
@@ -378,6 +370,14 @@
           var dataObjArr = _.cloneDeep(values);
           var data = _.cloneDeep(values);
           var filteredData = [];
+
+          var sortedByDateUnfilteredTimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
+          var totalHoursUnfiltered = ( (new Date(_.last(sortedByDateUnfilteredTimeData).datetime)).getTime() - (new Date(_.first(sortedByDateUnfilteredTimeData).datetime)).getTime())/(60*60*1000);
+
+          var unfilteredProportion =  totalHoursUnfiltered/dataObjArr.length;
+
+          console.log("UNFILTERED PROPORTION:",unfilteredProportion);
+
 
           data = _.map(data, 'value');
           data = data.sort(function(a, b){return a-b; });
@@ -457,13 +457,6 @@
         else
           return 0;
       }
-
-
-
-      
-
   }
-
-
 
 })();
