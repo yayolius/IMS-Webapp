@@ -1,371 +1,411 @@
 <div id="wrapper">
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <header-navbar></header-navbar>
+  <!-- Navigation -->
+  <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <header-navbar></header-navbar>
 
-            <!-- /.navbar-header -->
+    <!-- /.navbar-header -->
 
-            <acme-navbar></acme-navbar>
-          
-            <!-- /.navbar-static-side -->
-        </nav>
+    <acme-navbar></acme-navbar>
 
-        <div id="page-wrapper">
+    <!-- /.navbar-static-side -->
+  </nav>
+
+  <div id="page-wrapper">
 
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dispositivo {{vm.device.name}}</h1>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 ">
-                    <div class="panel panel-info">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Último dato concentración de polvo (mg/m<sup>3</sup>)</h3>
-                      </div>
-                      <div class="panel-body">
-                            <h2 class="text-center text-warning">{{vm.lastPolutionVal}} <small>mg/m<sup>3</sup></small></span></h2>
-                      </div>
-                    </div>
-                </div>
-               <div class="col-md-4 ">
-                  <div class="panel panel-info">
-                    <div class="panel-heading">
-                      <h3 class="panel-title">% de mitigación</h3>
-                    </div>
-                    <div class="panel-body">
-                          <c3chart bindto-id="gauge" chart-data="gauge.data" chart-columns="gauge.columns">
-                                  <chart-size chart-height="100"></chart-size> 
-                          </c3chart>
-                    </div>
-                </div>
-                </div>
-                 <div class="col-md-4 ">
-                    <div class="panel panel-info">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Dosificación</h3>
-                      </div>
-                      <div class="panel-body">
-                         <rzslider ng-if="vm.device.auto_supresor"  rz-slider-model="vm.slider.value" rz-slider-options="vm.slider.options"></rzslider>
-                         <p class="text-center text-warning" ng-if="!vm.device.auto_supresor">Desactivado</p>
-                      </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" >
-                <div class="col-md-12 ">
-                    <div class="panel panel-info">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Seleccionar baseline de los siguientes obtenidos esta semana</h3>
-                      </div>
-                      <div class="panel-body">
-                        <a class="btn btn-xs btn-default col-md-3" ng-class="{'active': baseline.from == vm.currentBaseline.from }"  ng-repeat="baseline in vm.availableBaselines" ng-click="vm.selectBaseline(baseline)">
-                           <h4>{{baseline.baseline}}</h4>
-                           <p>
-                             <small>
-                             <strong>{{baseline.count}} puntos</strong> <br />
-                              {{baseline.from | date:'EEEE dd/MM/y  HH:mm:ss'}}  - <br /> 
-                             {{baseline.to | date:'EEEE dd/MM/y  HH:mm:ss' }}</small>
-                           </p>
-                        </a>
-                         <h3 class="text-danger text-center" ng-if="vm.availableBaselines.length == 0">No se han recibido datos de linea base en la ultima semana, por favor revisar el dispositivo</h3>
-                      </div>
-                    </div>
-                </div>
-              <div class="col-md-12 " ng-if="vm.hasEmptyDatapoints">
-                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'hour'">No se han recibido datos en la última hora, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a>  <br /><br /></h3>
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header">Dispositivo {{vm.device.name}}</h1>
+      </div>
+      <!-- /.col-lg-12 -->
+    </div>
 
-                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == '3hours'">No se han recibido datos en las 3 últimas horas, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a>  <br /><br /></h3>
+    <div class="row">
+      <a ui-sref="baseline({ deviceId: vm.device.id })">LineaBase</a>
+    </div>
 
-                <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'day'">No se han recibido datos el ultimo dia, por favor revisar el dispositivo <br /><br /></h3>
 
+    <div class="row">
+      <div class="col-md-4 ">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Último dato concentración de polvo (mg/m<sup>3</sup>)</h3>
+          </div>
+          <div class="panel-body">
+            <h2 class="text-center text-warning">{{vm.lastPolutionVal}}
+              <small>mg/m<sup>3</sup></small>
+              </span></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 ">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">% de mitigación</h3>
+          </div>
+          <div class="panel-body">
+            <c3chart bindto-id="gauge" chart-data="gauge.data" chart-columns="gauge.columns">
+              <chart-size chart-height="100"></chart-size>
+            </c3chart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 ">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Dosificación</h3>
+          </div>
+          <div class="panel-body">
+            <rzslider ng-if="vm.device.auto_supresor" rz-slider-model="vm.slider.value"
+                      rz-slider-options="vm.slider.options"></rzslider>
+            <p class="text-center text-warning" ng-if="!vm.device.auto_supresor">Desactivado</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 ">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Seleccionar baseline de los siguientes obtenidos esta semana</h3>
+          </div>
+          <div class="panel-body">
+            <a class="btn btn-xs btn-default col-md-3" ng-class="{'active': baseline.from == vm.currentBaseline.from }"
+               ng-repeat="baseline in vm.availableBaselines" ng-click="vm.selectBaseline(baseline)">
+              <h4>{{baseline.baseline}}</h4>
+              <p>
+                <small>
+                  <strong>{{baseline.count}} puntos</strong> <br/>
+                  {{baseline.from | date:'EEEE dd/MM/y HH:mm:ss'}} - <br/>
+                  {{baseline.to | date:'EEEE dd/MM/y HH:mm:ss' }}
+                </small>
+              </p>
+            </a>
+            <h3 class="text-danger text-center" ng-if="vm.availableBaselines.length == 0">No se han recibido datos de
+              linea base en la ultima semana, por favor revisar el dispositivo</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 " ng-if="vm.hasEmptyDatapoints">
+        <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'hour'">No se han recibido datos en la última
+          hora, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a> <br/><br/>
+        </h3>
+
+        <h3 class="text-danger text-center" ng-if="vm.viewTimespan == '3hours'">No se han recibido datos en las 3
+          últimas horas, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a>
+          <br/><br/></h3>
+
+        <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'day'">No se han recibido datos el ultimo dia, por
+          favor revisar el dispositivo <br/><br/></h3>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 ">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+
+
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                  Cambiar rango de visualización
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <li><a ng-class="{'active': vm.viewTimespan == 'hour'}" ng-click="vm.updateTimespan('hour')">1
+                    Hora</a>
+                  </li>
+                  <li><a ng-class="{'active': vm.viewTimespan == '3hours'}" ng-click="vm.updateTimespan('3hours')">3
+                    Horas</a>
+                  </li>
+                  <li><a ng-class="{'active': vm.viewTimespan == 'day'}" ng-click="vm.updateTimespan('day')">1 Dia</a>
+                  </li>
+                </ul>
               </div>
             </div>
-
-             <div class="row" >
-                <div class="col-md-12 ">
-                    <div class="panel panel-primary">
-                      <div class="panel-heading">
-                        
-                       
-                         <div class="pull-right">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                    Cambiar rango de visualización
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu pull-right" role="menu">
-                                    <li><a ng-class="{'active': vm.viewTimespan == 'hour'}" ng-click="vm.updateTimespan('hour')">1 Hora</a>
-                                    </li>
-                                    <li><a ng-class="{'active': vm.viewTimespan == '3hours'}" ng-click="vm.updateTimespan('3hours')">3 Horas</a>
-                                    </li>
-                                    <li><a ng-class="{'active': vm.viewTimespan == 'day'}" ng-click="vm.updateTimespan('day')">1 Dia</a>
-                                    </li>
-                                </ul>
-                            </div>
-                         </div>
-                         <h2 class="panel-title">Concentración 
-                            <strong ng-if="vm.viewTimespan == 'hour'">Última Hora</strong>
-                            <strong ng-if="vm.viewTimespan == '3hours'">Últimas 3 Horas</strong>
-                            <strong ng-if="vm.viewTimespan == 'day'">Último Día</strong>
-                            (mg/m3)
-                         </h2>
-                      </div>
-                      <div class="panel-body" >
-                         <div id="last-time-chart" class="text-center"><span >Cargando gráfico ...</span></div>
-                      </div>
-                      <div class="panel-footer">
-                        <h4>Exportar datos</h4>
-                        <div class="btn-group btn-group-justified" role="group" role="group" aria-label="...">
-                          <a ng-href="{{vm.downloadUrls.hour}}" target="_blank" role="button" class="btn btn-primary"><i class="glyphicon glyphicon-download"></i> Última Hora</a>
-                          <a ng-href="{{vm.downloadUrls.day}}" target="_blank" role="button" class="btn btn-primary"><i class="glyphicon glyphicon-download"></i>  Último Día</a>
-                          <a ng-href="{{vm.downloadUrls.week}}" target="_blank" role="button" class="btn btn-success"><i class="glyphicon glyphicon-download"></i>  Última Semana</a>
-                          <a ng-href="{{vm.downloadUrls.month}}" target="_blank" role="button" class="btn btn-warning"><i class="glyphicon glyphicon-download"></i>  Último Mes</a>
-                           <a ng-href="{{vm.downloadUrls.all}}" target="_blank" role="button" class="btn btn-danger"><i class="glyphicon glyphicon-download"></i>  Todos los datos</a>
-                        </div>
-
-                      </div>
-                    </div>
-                </div>
+            <h2 class="panel-title">Concentración
+              <strong ng-if="vm.viewTimespan == 'hour'">Última Hora</strong>
+              <strong ng-if="vm.viewTimespan == '3hours'">Últimas 3 Horas</strong>
+              <strong ng-if="vm.viewTimespan == 'day'">Último Día</strong>
+              (mg/m3)
+            </h2>
+          </div>
+          <div class="panel-body">
+            <div id="last-time-chart" class="text-center"><span>Cargando gráfico ...</span></div>
+          </div>
+          <div class="panel-footer">
+            <h4>Exportar datos</h4>
+            <div class="btn-group btn-group-justified" role="group" role="group" aria-label="...">
+              <a ng-href="{{vm.downloadUrls.hour}}" target="_blank" role="button" class="btn btn-primary"><i
+                class="glyphicon glyphicon-download"></i> Última Hora</a>
+              <a ng-href="{{vm.downloadUrls.day}}" target="_blank" role="button" class="btn btn-primary"><i
+                class="glyphicon glyphicon-download"></i> Último Día</a>
+              <a ng-href="{{vm.downloadUrls.week}}" target="_blank" role="button" class="btn btn-success"><i
+                class="glyphicon glyphicon-download"></i> Última Semana</a>
+              <a ng-href="{{vm.downloadUrls.month}}" target="_blank" role="button" class="btn btn-warning"><i
+                class="glyphicon glyphicon-download"></i> Último Mes</a>
+              <a ng-href="{{vm.downloadUrls.all}}" target="_blank" role="button" class="btn btn-danger"><i
+                class="glyphicon glyphicon-download"></i> Todos los datos</a>
             </div>
 
-
-            <div class="row">
-                <h2>Datapoints</h2>
-                <div class="col-md-12">
-                   <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Cálculo de optimización</h3>
-                    </div>
-                    <div class="panel-body">
-                   <p style="white-space: pre; margin:0; "> 
-                          1 -  ( ( PromedioDeValores    ) / ( HorasTotales * TonelajePromedio ) )  /  ( ( PromedioDeBaselines ) / (  HorasTotalesBaseline * TonelajePromedio ) ) </p> 
-
-                    <p style="white-space: pre; margin:0;"> 
-                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredBaselineGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) ) </p>
-                    <p style="white-space: pre; margin:0;"> 
-                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )</p>
-                    <p style="white-space: pre; margin:0;"> 
-                          1 -  (  {{vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}   /   {{vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje) }}  )</p>
-                    <p style="white-space: pre; margin:0;"> 
-                          1 -  (  {{ (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  )</p>
-                    <p style="white-space: pre;"> 
-                          <strong>Total:</strong>   {{ 1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  </p>
-
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Datapoints</h3>
-                    </div>
-                    <div class="panel-body">
-                      <div class="data">
-                        <ul>
-                          <li>Percentil 10: {{vm.filteredGrid.p10}}</li>
-                          <li>Percentil 90: {{vm.filteredGrid.p90}}</li>
-                          <li>Suma: {{vm.filteredGrid.sum}}</li>
-                          <li>Promedio: {{vm.filteredGrid.averageValue}}</li>
-                        </ul>
-                      </div>
-                      <div id="grid1" ui-grid="vm.mainGrid" ></div>
-                    </div>
-                  </div>
-
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h3 class="panel-title">Datos filtrados y procesados</h3>
-                    </div>
-                    <div class="panel-body">
-                      <div id="grid2" ui-grid="vm.filteredGrid" ></div>
-                    </div>
-                  </div>
-
-                </div>
-            
-                 <div class="col-md-6 ">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Baseline</h3>
-                      </div>
-                      <div class="panel-body">
-                        <div class="data">
-                          <ul>
-                            <li>Percentil 10: {{vm.filteredBaselineGrid.p10}}</li>
-                            <li>Percentil 90: {{vm.filteredBaselineGrid.p90}}</li>
-                            <li>Suma: {{vm.filteredBaselineGrid.sum}}</li>
-                            <li>Promedio: {{vm.filteredBaselineGrid.averageValue}}</li>
-                          </ul>
-                        </div>
-                        <div id="grid2" ui-grid="vm.baselineGrid" ></div>
-                      </div>
-                    </div>
-
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Datos filtrados y procesados</h3>
-                      </div>
-                      <div class="panel-body">
-                        <div id="grid2" ui-grid="vm.filteredBaselineGrid" ></div>
-                      </div>
-                    </div>
-
-                </div>
-            </div>
-
-           
-
-            <div class="row" ng-if="vm.markers.length > 0 && !vm.hasEmptyDatapoints">
-                <div class="col-md-12 ">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">GPS</h3>
-                      </div>
-                      <div class="panel-body">
-                         <ui-gmap-google-map center='vm.map.center' zoom='vm.map.zoom' bounds="vm.map.bounds" options="vm.map.options">
-                            <ui-gmap-markers fit="true" models="vm.markers" coords="'self'" icon="'icon'">
-                            </ui-gmap-markers>
-                         </ui-gmap-google-map>
-                      </div>
-                    </div>
-                </div>
-            </div>
-
-
-             <div class="row">
-                
-                <div class="col-md-6 ">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Configuración del Dispositivo</h3>
-                      </div>
-                      <div class="panel-body">
-                            <form name="formUpdateDevice" novalidate role="form"  class="form-horizontal">
-
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Nombre:</label>
-                                            <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.name" name="deviceName" readonly="true" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Tipo de sensor</label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" name="deviceType" ng-model="vm.device.type">
-                                                    <option value="polucion-simple">Chancado y Correas</option>
-                                                    <option value="polucion-gps">Caminos</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Ubicacion GPS Latitud</label>
-                                            <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.gps.lat" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Ubicacion GPS Longitud</label>
-                                            <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.gps.lng" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                           <label class="col-md-4" for="">Modo de lectura</label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" name="deviceMode" ng-model="vm.device.mode">
-                                                    <option value="linea-base" selected="selected">Sin supresor</option>
-                                                    <option value="ssp">Con supresor</option>
-                                                </select>
-                                            </div>
-                                        </div> 
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Tipo de medición</label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" name="deviceReadType" ng-model="vm.device.read_type">
-                                                    <option value="polvo-total"  selected="selected">Polvo Total</option>
-                                                    <option value="pm10">PM10</option>
-                                                    <option value="pm2.5">PM2.5</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">LLP DS</label>
-                                           <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.llp_ds" placeholder="" name="deviceLlpDs" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Tonelaje</label>
-                                           <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.tonelaje" placeholder="" name="deviceTonelaje" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                           <label class="col-md-4" for="">Umbral de Alerta</label>
-                                           <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.alert_treadshot" placeholder="" name="deviceUmbralAlerta" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                           <label class="col-md-4" for="">Auto Supresor</label>
-                                           <div class="col-md-8">
-                                                <input   ng-model="vm.device.auto_supresor" name="deviceAutoSupresor" type="checkbox" > <span>Activado</span>
-                                            </div>
-                                        </div>
-                                                  
-                                        <div class="form-group">
-                                            <input type="submit" ng-disabled="vm.sendingDeviceForm" ng-click="vm.updateDevice()" class="btn btn-lg btn-success btn-block" value="Actualizar configuración" />
-                                        </div>
-                                       
-                                    </fieldset>
-
-                                </form>
-                      </div>
-                    </div>
-                </div>
-
-                 <div class="col-md-6 ">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Email de usuarios asociados a este dispositivo</h3>
-                      </div>
-                      <div class="panel-body">
-                         <ul class="list-group">
-                          <li class="list-group-item" ng-repeat="user in vm.device.users">{{user.email}}</li>
-                         </ul>
-                      </div>
-                    </div>
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Administración</h3>
-                      </div>
-                      <div class="panel-body">
-                        <form name="formUnassignDevice" novalidate role="form"  >
-                          <fieldset>                                                  
-                              <div class="form-group">
-                                  <input type="submit" ng-disabled="vm.sendingDeviceForm"  class="btn btn-lg btn-danger btn-block" value="Remover dispositivo de mi cuenta"  ng-really-message="Esta seguro que desea remover este dispositivo de su cuenta?" ng-really-click="vm.unassignDevice()" />
-                              </div>
-                          </fieldset>
-                        </form>
-                      </div>
-                    </div>
-                </div>
-
-            </div>
-       
-
-
-
-
-            
+          </div>
         </div>
-        <!-- /#page-wrapper -->
+      </div>
+    </div>
+
+
+    <div class="row">
+      <h2>Datapoints</h2>
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Cálculo de optimización</h3>
+          </div>
+          <div class="panel-body">
+            <p style="white-space: pre; margin:0; ">
+              1 - ( ( PromedioDeValores ) / ( HorasTotales * TonelajePromedio ) ) / ( ( PromedioDeBaselines ) / (
+              HorasTotalesBaseline * TonelajePromedio ) ) </p>
+
+            <p style="white-space: pre; margin:0;">
+              1 - ( ( {{vm.filteredGrid.averageValue}} ) / ( {{vm.filteredGrid.totalHours}} *
+              {{vm.filteredGrid.averageTonelaje}} ) ) / ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (
+              {{vm.filteredBaselineGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) ) </p>
+            <p style="white-space: pre; margin:0;">
+              1 - ( ( {{vm.filteredGrid.averageValue}} ) / ( {{vm.filteredGrid.totalHours *
+              vm.filteredGrid.averageTonelaje}} ) ) / ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (
+              {{vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )</p>
+            <p style="white-space: pre; margin:0;">
+              1 - ( {{vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }} /
+              {{vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours *
+              vm.filteredGrid.averageTonelaje) }} )</p>
+            <p style="white-space: pre; margin:0;">
+              1 - ( {{ (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje)) /
+              (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours *
+              vm.filteredGrid.averageTonelaje)) }} )</p>
+            <p style="white-space: pre;">
+              <strong>Total:</strong> {{ 1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours *
+              vm.filteredGrid.averageTonelaje)) / (vm.filteredBaselineGrid.averageValue /
+              (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }} </p>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Datapoints</h3>
+          </div>
+          <div class="panel-body">
+            <div class="data">
+              <ul>
+                <li>Percentil 10: {{vm.filteredGrid.p10}}</li>
+                <li>Percentil 90: {{vm.filteredGrid.p90}}</li>
+                <li>Suma: {{vm.filteredGrid.sum}}</li>
+                <li>Promedio: {{vm.filteredGrid.averageValue}}</li>
+              </ul>
+            </div>
+            <div id="grid1" ui-grid="vm.mainGrid"></div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Datos filtrados y procesados</h3>
+          </div>
+          <div class="panel-body">
+            <div id="grid2" ui-grid="vm.filteredGrid"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-6 ">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Baseline</h3>
+          </div>
+          <div class="panel-body">
+            <div class="data">
+              <ul>
+                <li>Percentil 10: {{vm.filteredBaselineGrid.p10}}</li>
+                <li>Percentil 90: {{vm.filteredBaselineGrid.p90}}</li>
+                <li>Suma: {{vm.filteredBaselineGrid.sum}}</li>
+                <li>Promedio: {{vm.filteredBaselineGrid.averageValue}}</li>
+              </ul>
+            </div>
+            <div id="grid2" ui-grid="vm.baselineGrid"></div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Datos filtrados y procesados</h3>
+          </div>
+          <div class="panel-body">
+            <div id="grid2" ui-grid="vm.filteredBaselineGrid"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="row" ng-if="vm.markers.length > 0 && !vm.hasEmptyDatapoints">
+      <div class="col-md-12 ">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">GPS</h3>
+          </div>
+          <div class="panel-body">
+            <ui-gmap-google-map center='vm.map.center' zoom='vm.map.zoom' bounds="vm.map.bounds"
+                                options="vm.map.options">
+              <ui-gmap-markers fit="true" models="vm.markers" coords="'self'" icon="'icon'">
+              </ui-gmap-markers>
+            </ui-gmap-google-map>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+
+      <div class="col-md-6 ">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Configuración del Dispositivo</h3>
+          </div>
+          <div class="panel-body">
+            <form name="formUpdateDevice" novalidate role="form" class="form-horizontal">
+
+              <fieldset>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Nombre:</label>
+                  <div class="col-md-8">
+                    <input class="form-control" ng-model="vm.device.name" name="deviceName" readonly="true" type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Tipo de sensor</label>
+                  <div class="col-md-8">
+                    <select class="form-control" name="deviceType" ng-model="vm.device.type">
+                      <option value="polucion-simple">Chancado y Correas</option>
+                      <option value="polucion-gps">Caminos</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Ubicacion GPS Latitud</label>
+                  <div class="col-md-8">
+                    <input class="form-control" ng-model="vm.device.gps.lat" placeholder="Ejemplo: -10.323243232"
+                           name="deviceGPSLat" type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Ubicacion GPS Longitud</label>
+                  <div class="col-md-8">
+                    <input class="form-control" ng-model="vm.device.gps.lng" placeholder="Ejemplo: -10.323243232"
+                           name="deviceGPSLat" type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Modo de lectura</label>
+                  <div class="col-md-8">
+                    <select class="form-control" name="deviceMode" ng-model="vm.device.mode">
+                      <option value="linea-base" selected="selected">Sin supresor</option>
+                      <option value="ssp">Con supresor</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Tipo de medición</label>
+                  <div class="col-md-8">
+                    <select class="form-control" name="deviceReadType" ng-model="vm.device.read_type">
+                      <option value="polvo-total" selected="selected">Polvo Total</option>
+                      <option value="pm10">PM10</option>
+                      <option value="pm2.5">PM2.5</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">LLP DS</label>
+                  <div class="col-md-8">
+                    <input class="form-control" ng-model="vm.device.llp_ds" placeholder="" name="deviceLlpDs"
+                           type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Tonelaje</label>
+                  <div class="col-md-8">
+                    <input class="form-control" ng-model="vm.device.tonelaje" placeholder="" name="deviceTonelaje"
+                           type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Umbral de Alerta</label>
+                  <div class="col-md-8">
+                    <input class="form-control" ng-model="vm.device.alert_treadshot" placeholder=""
+                           name="deviceUmbralAlerta" type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4" for="">Auto Supresor</label>
+                  <div class="col-md-8">
+                    <input ng-model="vm.device.auto_supresor" name="deviceAutoSupresor" type="checkbox">
+                    <span>Activado</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <input type="submit" ng-disabled="vm.sendingDeviceForm" ng-click="vm.updateDevice()"
+                         class="btn btn-lg btn-success btn-block" value="Actualizar configuración"/>
+                </div>
+
+              </fieldset>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 ">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Email de usuarios asociados a este dispositivo</h3>
+          </div>
+          <div class="panel-body">
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="user in vm.device.users">{{user.email}}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Administración</h3>
+          </div>
+          <div class="panel-body">
+            <form name="formUnassignDevice" novalidate role="form">
+              <fieldset>
+                <div class="form-group">
+                  <input type="submit" ng-disabled="vm.sendingDeviceForm" class="btn btn-lg btn-danger btn-block"
+                         value="Remover dispositivo de mi cuenta"
+                         ng-really-message="Esta seguro que desea remover este dispositivo de su cuenta?"
+                         ng-really-click="vm.unassignDevice()"/>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
 
     </div>
-    <!-- /#wrapper -->
+
+
+  </div>
+  <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->

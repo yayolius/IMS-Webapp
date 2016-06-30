@@ -25,14 +25,13 @@
         templateUrl: 'app/register/register.html',
         controller: 'RegisterController',
         controllerAs: 'vm'
-      }) 
+      })
       .state('logout', {
         url: '/logout',
         templateUrl: 'app/logout/logout.html',
         controller: 'LogoutController',
         controllerAs: 'vm'
       })
-     
       .state('devices-assign', {
         url: '/devices/assign',
         templateUrl: 'app/assignDevice/assign.device.html',
@@ -43,6 +42,12 @@
         url: '/devices/:deviceId',
         templateUrl: 'app/device/device.html',
         controller: 'DeviceController',
+        controllerAs: 'vm'
+      })
+      .state('baseline', {
+        url: '/devices/:deviceId/baseline',
+        templateUrl: 'app/baseline/baseline.html',
+        controller: 'BaselineController',
         controllerAs: 'vm'
       })
       ;
