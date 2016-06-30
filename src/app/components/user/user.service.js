@@ -12,11 +12,12 @@
         service.Create = Create;
         service.Login = Login;
         service.Logout = Logout;
+        service.GetById = GetById;
         service.AllCurrentUserDevices = AllCurrentUserDevices;
 
        /**
         service.GetAll = GetAll;
-        service.GetById = GetById;
+        
         service.GetByUsername = GetByUsername;
         
         service.Update = Update;
@@ -34,14 +35,24 @@
         }
 
         function Logout() {
-            return $http.post(apiURL + '/api/Clients/logout?access_token=' +  $rootScope.globals.currentUser.sesionId ).then( handleSuccess,handleError);
+            return $http.post(apiURL + '/api/Clients/logout?access_token=' +  getToken() ).then( handleSuccess,handleError);
         }
 
         function AllCurrentUserDevices() {
-            return $http.get(apiURL + '/api/Clients/' + $rootScope.globals.currentUser.userId + '/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId ).then( handleSuccess,handleError);
+           
+            return $http.get(apiURL + '/api/Clients/' + $rootScope.globals.currentUser.userId + '/Devices?access_token=' +  getToken() ).then( handleSuccess,handleError);
         }
 
+        function GetById(id) {
+            return $http.get(apiURL + '/api/Clients/' + id + '/?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
 
+        function getToken(){
+            var token = "-";
+            if( $rootScope.globals &&  $rootScope.globals.currentUser && $rootScope.globals.currentUser.sesionId)
+                token =  $rootScope.globals.currentUser.sesionId;
+            return token;
+        }
 
         /*
         function GetAll() {

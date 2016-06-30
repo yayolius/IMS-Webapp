@@ -23,11 +23,11 @@
                                     <span class="text-danger" ng-show="form.$submitted && form.password.$error.required">El password es obligatorio</span>
                                     <span class="text-danger" ng-show="form.$submitted && form.password.$error.minlength">El password debe tener al menos 5 caracteres</span>
                                 </div>
-                                <div class="checkbox">
+                                <!--div class="checkbox">
                                     <label>
                                         <input ng-model="vm.rememberme" name="remember" type="checkbox" value="Recordarme">Recordarme
                                     </label>
-                                </div>
+                                </div-->
 
                                 <input type="submit" ng-click="vm.login()" class="btn btn-lg btn-success btn-block" value="Ingresar" />
                                 <p>&nbsp;</p>
