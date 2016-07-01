@@ -45,6 +45,12 @@
         controller: 'DeviceController',
         controllerAs: 'vm'
       })
+      .state('device-settings', {
+        url: '/devices/:deviceId/settings',
+        templateUrl: 'app/device-settings/device-settings.html',
+        controller: 'DeviceSettingsController',
+        controllerAs: 'vm'
+      })
       ;
 
     $urlRouterProvider.otherwise('/login');

@@ -16,10 +16,11 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dispositivo {{vm.device.name}}</h1>
+                    <h1 class="page-header"><i class="fa fa-bar-chart-o fa-fw"></i></a> Sensor {{vm.device.name}} <small class="pull-right"><a class="settings-link" href="#/devices/{{vm.device.id}}/settings">Configurar dispositivo <i class="fa fa-cog"></i></a></small></h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            <div id="container"></div>
             
             <div class="row">
                 <div class="col-md-4 ">
@@ -116,7 +117,7 @@
                          </h2>
                       </div>
                       <div class="panel-body" >
-                         <div id="last-time-chart" class="text-center"><span >Cargando gráfico ...</span></div>
+                         <div id="time-chart" class="text-center">Cargando gráfico ...</div>
                       </div>
                       <div class="panel-footer">
                         <h4>Exportar datos</h4>
@@ -134,7 +135,7 @@
             </div>
 
 
-            <div class="row">
+            <div class="row" ng-if="vm.device.show_calculo">
                 <h2>Datapoints</h2>
                 <div class="col-md-12">
                    <div class="panel panel-default">
@@ -239,98 +240,9 @@
 
              <div class="row">
                 
-                <div class="col-md-6 ">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Configuración del Dispositivo</h3>
-                      </div>
-                      <div class="panel-body">
-                            <form name="formUpdateDevice" novalidate role="form"  class="form-horizontal">
+                
 
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Nombre:</label>
-                                            <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.name" name="deviceName" readonly="true" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Tipo de sensor</label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" name="deviceType" ng-model="vm.device.type">
-                                                    <option value="polucion-simple">Chancado y Correas</option>
-                                                    <option value="polucion-gps">Caminos</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Ubicacion GPS Latitud</label>
-                                            <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.gps.lat" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Ubicacion GPS Longitud</label>
-                                            <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.gps.lng" placeholder="Ejemplo: -10.323243232" name="deviceGPSLat" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                           <label class="col-md-4" for="">Modo de lectura</label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" name="deviceMode" ng-model="vm.device.mode">
-                                                    <option value="linea-base" selected="selected">Sin supresor</option>
-                                                    <option value="ssp">Con supresor</option>
-                                                </select>
-                                            </div>
-                                        </div> 
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Tipo de medición</label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" name="deviceReadType" ng-model="vm.device.read_type">
-                                                    <option value="polvo-total"  selected="selected">Polvo Total</option>
-                                                    <option value="pm10">PM10</option>
-                                                    <option value="pm2.5">PM2.5</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">LLP DS</label>
-                                           <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.llp_ds" placeholder="" name="deviceLlpDs" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4" for="">Tonelaje</label>
-                                           <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.tonelaje" placeholder="" name="deviceTonelaje" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                           <label class="col-md-4" for="">Umbral de Alerta</label>
-                                           <div class="col-md-8">
-                                                <input class="form-control" ng-model="vm.device.alert_treadshot" placeholder="" name="deviceUmbralAlerta" type="text"  >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                           <label class="col-md-4" for="">Auto Supresor</label>
-                                           <div class="col-md-8">
-                                                <input   ng-model="vm.device.auto_supresor" name="deviceAutoSupresor" type="checkbox" > <span>Activado</span>
-                                            </div>
-                                        </div>
-                                                  
-                                        <div class="form-group">
-                                            <input type="submit" ng-disabled="vm.sendingDeviceForm" ng-click="vm.updateDevice()" class="btn btn-lg btn-success btn-block" value="Actualizar configuración" />
-                                        </div>
-                                       
-                                    </fieldset>
-
-                                </form>
-                      </div>
-                    </div>
-                </div>
-
-                 <div class="col-md-6 ">
+                 <div class="col-md-12 ">
                     <div class="panel panel-default">
                       <div class="panel-heading">
                         <h3 class="panel-title">Email de usuarios asociados a este dispositivo</h3>

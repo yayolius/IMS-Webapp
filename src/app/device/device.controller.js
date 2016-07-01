@@ -114,7 +114,7 @@
       }
 
       function logCurrentBaseline(){
-        console.log("XXXX",vm.currentBaseline);
+        //console.log("XXXX",vm.currentBaseline);
         if(vm.currentBaseline.allvalues){
           vm.baselineGrid.data = vm.currentBaseline.allvalues;
 
@@ -205,13 +205,13 @@
             });
 
             DeviceService.GetDataBaselinesFromDate(vm.device.id,'week').then(function(baselines){
-              console.log("BASELINES:",baselines)
+              //console.log("BASELINES:",baselines)
               vm.availableBaselines = baselines;
               if(vm.availableBaselines == 0){
-                console.log(1);
+                //console.log(1);
                  vm.drawGraphFromTime();
               }else{
-                console.log(2);
+                //console.log(2);
                 vm.currentBaseline = vm.availableBaselines[0];
                 vm.drawGraphFromTime();
                 logCurrentBaseline();
@@ -223,11 +223,12 @@
       });
 
       vm.drawGraphFromTime = function drawGraphFromTime(){
+
         //return;
         //angular.element("#last-time-chart").text("cargando");
         DeviceService.GetDataPointsFromDate(vm.device.id, vm.viewTimespan ).then(function(response){
           
-
+          console.log(response);
           vm.mainGrid.data = response;
           
           vm.originalDatapoints = _.cloneDeep(response);
@@ -250,7 +251,9 @@
          
           _.remove(vm.datapoints, function(point){  return point.value_baseline || point.value_baseline === 0; });
 
-          vm.lastPolutionVal = _.last(vm.datapoints).value;
+          if(_.last(vm.datapoints))
+          
+            vm.lastPolutionVal = _.last(vm.datapoints).value;
 
           var points = [];
           _.forEach(vm.datapoints,function(res,index){
@@ -277,45 +280,116 @@
           
           if(vm.device.alert_treadshot) goals = [ vm.device.alert_treadshot , baseline ];
 
-          if(!vm.deviceGraph && vm.datapoints.length > 0){
-            angular.element("#last-time-chart").text("");
-            vm.deviceGraph =  Morris.Line({
-                element: 'last-time-chart',
-                data: vm.datapoints,
-                xkey: 'datetime',
-                ykeys: ['value'],
-                labels: ['Value'],
-                goals: goals,
-                goalLineColors: ['#ff0000','#eea236'],
-                pointSize: 0,
-                hideHover: 'auto',
-                parseTime:true,
-                smooth: false,
-                lineWidth:2,
-                goalStrokeWidth:2,
-                xLabels:['minute'],
-                hoverCallback: function(index, options, content) {
+          if(!vm.deviceGraph && vm.datapoints.length >= 0){
+            angular.element("#time-chart").text("");
+            
+              var dataValues = [];
+              var dataBaselines = [];
+              var dataTonelajes = [];
+              for(var index in vm.datapoints){
+                if(vm.datapoints[index].value)
+                  dataValues.push( [ (new Date(vm.datapoints[index].datetime)).getTime() , vm.datapoints[index].value]);
 
-                    return("<big>"+vm.datapoints[index].value + "</big><br />" + $filter('date')(vm.datapoints[index].datetime, 'EEEE dd/MM/y  HH:mm:ss'));
+                if(vm.datapoints[index].value_baseline)
+                  dataBaselines.push( [ (new Date(vm.datapoints[index].datetime)).getTime() , vm.datapoints[index].value_baseline]);
+
+                if(vm.datapoints[index].tonelaje)
+                  dataTonelajes.push( [ (new Date(vm.datapoints[index].datetime)).getTime() , vm.datapoints[index].tonelaje]);
+
+              }
+
+
+
+              var options = {
+                   chart: {
+                    zoomType: 'x'
+                },
+                title: {
+                    text: 'Valores del sensor de polución'
+                },
+                subtitle: {
+                    text: document.ontouchstart === undefined ?
+                            'Hacer click y arrastrar para acercar.' : 'Tocar el gráfico para acercar.'
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: [{
+                    max: vm.device.alert_treadshot ,
+                    title: {
+                        text: 'Valor del sensor'
+                    },
+                    plotLines: [{
+                                    value: baseline,
+                                    color: 'green',
+                                    dashStyle: 'shortdash',
+                                    width: 2,
+                                    label: {
+                                        text: 'Linea base'
+                                    }
+                                }, {
+                                    value: vm.device.alert_treadshot,
+                                    color: 'red',
+                                    dashStyle: 'shortdash',
+                                    width: 2,
+                                    label: {
+                                        text: 'Umbral de alerta'
+                                    } 
+                                }]
+                },{
+                  title: {
+                          text: 'Tonelaje'
+                  },
+                  opposite: true,
+                  gridLineWidth: 1
                 }
-            });
+                ],
+                legend: {
+                    enabled: true
+                },
+                tooltip: {
+                    shared: true
+                },
+                series: [{
+                
+                    type: 'line',
+                    name: 'Concentración de Polvo (mg/m3)',
+                    data: dataValues
+                },
+                {
+                    
+                    type: 'line',
+                    name: 'Linea base concentración de Polvo (mg/m3)',
+                    data: dataBaselines
+                },
+                {
+                    yAxis: 1,
+                    type: 'line',
+                    name: 'Toneladas de Mineral (ton/hra)',
+                    data: dataTonelajes
+                }]
+            }
+            
+            if(!vm.device.show_tonelaje){
+              options.yAxis.pop();
+              options.series.pop();
+            }
+            
+            
+            vm.deviceGraph  = $('#time-chart').highcharts(options);
+            console.log(vm.deviceGraph);
           }
           else if(vm.deviceGraph && vm.datapoints.length > 0){
             
-            console.log(vm.deviceGraph.options.goals, baseline)
+            //console.log(vm.deviceGraph.options.goals, baseline)
 
-            vm.deviceGraph.options.goals = [vm.deviceGraph.options.goals[0],baseline];
-            vm.deviceGraph.setData(vm.datapoints);
+            //vm.deviceGraph.options.goals = [vm.deviceGraph.options.goals[0],baseline];
+            //vm.deviceGraph.setData(vm.datapoints);
             
 
           }else if(vm.datapoints.length === 0){
-            angular.element("#last-time-chart").text("No existen datos para graficar");
-          }
-
-
-
-
-          
+            angular.element("#time-chart").text("No existen datos para graficar");
+          }         
 
           vm.loadTimeout = setTimeout(function(){ 
             getLast();
@@ -345,9 +419,8 @@
             var baseline = getBaseline();
 
             if(response.length > 0) {
-              vm.deviceGraph.options.goals = [vm.deviceGraph.options.goals[0],baseline];
-              vm.deviceGraph.setData(vm.datapoints);
-              
+              //vm.deviceGraph.options.goals = [vm.deviceGraph.options.goals[0],baseline];
+              //vm.deviceGraph.setData(vm.datapoints);  
             }
 
             vm.loadTimeout = setTimeout(function(){ 
@@ -372,11 +445,14 @@
           var filteredData = [];
 
           var sortedByDateUnfilteredTimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
-          var totalHoursUnfiltered = ( (new Date(_.last(sortedByDateUnfilteredTimeData).datetime)).getTime() - (new Date(_.first(sortedByDateUnfilteredTimeData).datetime)).getTime())/(60*60*1000);
-
+          if(_.last(sortedByDateUnfilteredTimeData)) {
+           var totalHoursUnfiltered = ( (new Date(_.last(sortedByDateUnfilteredTimeData).datetime)).getTime() - (new Date(_.first(sortedByDateUnfilteredTimeData).datetime)).getTime())/(60*60*1000);
+          }else{
+            var totalHoursUnfiltered = 0;
+          }
           var unfilteredProportion =  totalHoursUnfiltered/dataObjArr.length;
 
-          console.log("UNFILTERED PROPORTION:",unfilteredProportion);
+          //console.log("UNFILTERED PROPORTION:",unfilteredProportion);
 
 
           data = _.map(data, 'value');
@@ -457,6 +533,8 @@
         else
           return 0;
       }
+
+
   }
 
 })();
