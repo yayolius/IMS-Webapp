@@ -12,6 +12,13 @@
 @navbar-inverse-link-color: #5AADBB;
 @icon-font-path: '../../bower_components/bootstrap/fonts/';
 
+html,body{
+  height: 100%; margin: 0px; padding: 0px;
+}
+.ng-scope{
+  height:100%;
+}
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -27,12 +34,17 @@
   }
 }
 
-#last-time-chart{
-	width:100%;
-	height:400px;
-}
 
 .angular-google-map-container { height: 400px; }
+
+#login{
+  background:url('../assets/images/login.jpg') no-repeat center;
+  background-size:cover;
+  width:100%;
+  height:100%;
+  min-height:100%;
+  display:table;
+}
 
 /**
  *  Do not remove the comments below. It's the markers used by gulp-inject to inject
