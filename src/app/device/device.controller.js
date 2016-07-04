@@ -366,8 +366,8 @@
             }
             
             if(!vm.device.show_tonelaje){
-              options.yAxis.pop();
-              options.series.pop();
+              vm.deviceGraphOptions.yAxis.pop();
+              vm.deviceGraphOptions.series.pop();
             }
             
             
