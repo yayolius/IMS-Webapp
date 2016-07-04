@@ -1,0 +1,59 @@
+<div id="wrapper">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <header-navbar></header-navbar>
+        <acme-navbar></acme-navbar>
+    </nav>
+
+    <div id="page-wrapper">
+    	<div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header"><i class="fa fa-cog"></i> Lineas base del Sensor <strong>{{vm.device.name}}</strong> <small class="pull-right"><a class="settings-link" href="#/devices/{{vm.device.id}}"> <i class="fa fa-chevron-left"></i> Volver al dispositivo </a></small></h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <div class="row" >
+            <div class="col-md-12 ">
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Seleccionar baseline de los siguientes obtenidos esta semana</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="col-md-12 baseline-line fading" ng-class="{'active': baseline.from == vm.currentBaseline.from }"  ng-repeat="baseline in vm.availableBaselines">
+                       <div class="row">
+                         <div class="col-md-2" class="text-center">
+                           <h2 class="text-center">{{baseline.baseline}}<br />
+                           <small><small><strong>{{baseline.count}}</strong> puntos</small></small>
+                           </h2>
+                         </div>
+                         <div class="col-md-4" class="text-center">
+                          <br />
+                           <p class="btn-group btn-group-justified"> 
+                           <a class="btn btn-xs" ng-click="vm.selectBaseline($index)" ng-class="{'btn-success': vm.device.baseline_from == baseline.from && vm.device.baseline_value == baseline.baseline ,'btn-info': vm.device.baseline_from != baseline.from && vm.device.baseline_value != baseline.baseline }">
+                              <span ng-if="vm.device.baseline_from != baseline.from && vm.device.baseline_value != baseline.baseline"><i class="fa fa-circle-o"></i> Seleccionar 
+                              </span>
+            
+                              <span ng-if="vm.device.baseline_from == baseline.from && vm.device.baseline_value == baseline.baseline"><i class="fa fa-dot-circle-o"></i> Seleccionado 
+                              </span>
+                            </a>
+                           <a class="btn btn-xs btn-warning" ng-click="vm.exportBaseline($index)"><i class="glyphicon glyphicon-download"></i> Exportar </a>
+                           <a class="btn btn-xs btn-danger" ng-click="vm.deleteBaseline($index)"><i class="fa fa-close"></i> Eliminar </a></p> 
+                           <p class="text-center">
+                              {{baseline.from | date:'EEEE dd/MM/y  HH:mm:ss'}}  - <br /> 
+                             {{baseline.to | date:'EEEE dd/MM/y  HH:mm:ss' }}
+                           </p>
+                         </div>
+
+                         <div class="col-md-6">
+                          <div id="basline-graph-{{$index}}" class="baseline-graph"></div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+</div>

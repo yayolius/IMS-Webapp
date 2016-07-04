@@ -25,6 +25,7 @@
       var vm = this;
       vm.deviceCount = 0;
       vm.devices = [];
+      vm.isAdmin = false;
 
       UserService.AllCurrentUserDevices()
               .then(function (res) {
@@ -32,6 +33,13 @@
                  if(vm.deviceCount > 0){
                     vm.devices = res;
                  }
+              });
+
+      UserService.isAdmin()
+              .then(function (res) {
+                if(res && res.is){
+                  vm.isAdmin = true;
+                }
               });
 
 

@@ -6,7 +6,7 @@
     .run(runBlock);
 
   /** @ngInject */
-  function runBlock($log,$rootScope, $location, $cookies, $http,AuthenticationService) {
+  function runBlock($log,$rootScope, $location, $cookies, $http,AuthenticationService,UserService) {
 
       AuthenticationService.ReloadSavedCredentials();
 
@@ -24,6 +24,14 @@
         $location.path('/login');
       }
 
+      if($.inArray($location.path(), ['/admin']) >= 0) {
+         UserService.isAdmin()
+              .then(function (res) {
+                if(res && res.is == false){
+                  $location.path('/dashboard');
+                }
+              });
+      }
 
     });
 

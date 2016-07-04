@@ -51,6 +51,18 @@
         controller: 'DeviceSettingsController',
         controllerAs: 'vm'
       })
+      .state('device-baselines', {
+        url: '/devices/:deviceId/baselines',
+        templateUrl: 'app/device-baselines/device-baselines.html',
+        controller: 'DeviceBaselinesController',
+        controllerAs: 'vm'
+      })
+      .state('admin', {
+        url: '/admin',
+        templateUrl: 'app/admin/admin.html',
+        controller: 'AdminController',
+        controllerAs: 'vm'
+      })
       ;
 
     $urlRouterProvider.otherwise('/login');

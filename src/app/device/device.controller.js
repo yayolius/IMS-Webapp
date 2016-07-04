@@ -6,13 +6,16 @@
     .controller('DeviceController', DeviceController);
 
   /** @ngInject */
-  function DeviceController($scope,$log,DeviceService,$stateParams,$location,$filter) {
+  function DeviceController($scope,$log,DeviceService,UserService,$stateParams,$location,$filter) {
      
 
       var vm = this;
 
       vm.device = { name: ""};
+      vm.isUserAdmin = false;
+      vm.isUserDeviceAdmin = false;
       vm.deviceGraph = null;
+      vm.deviceGraphOptions = null;
       vm.markers = [];
       vm.hasEmptyDatapoints = false;
       vm.datapoints = [];
@@ -115,7 +118,7 @@
 
       function logCurrentBaseline(){
         //console.log("XXXX",vm.currentBaseline);
-        if(vm.currentBaseline.allvalues){
+        if(vm.currentBaseline && vm.currentBaseline.allvalues){
           vm.baselineGrid.data = vm.currentBaseline.allvalues;
 
           var values =  _.reject(vm.baselineGrid.data, function(o) { return o.value || o.value === 0; });
@@ -127,7 +130,11 @@
           data = data.sort(function(a, b){return a-b; });
 
           var percentil10 = Math.round(getPercentile(data,10)*100)/100; 
+          if(vm.device.percentil_inferior)
+            percentil10 = vm.device.percentil_inferior;
           var percentil90 = Math.round(getPercentile(data,90)*100)/100;
+          if(vm.device.percentil_superior)
+            percentil90 = vm.device.percentil_superior;
 
           var filtered = [];
         
@@ -145,17 +152,11 @@
           });
 
           var averageValue = sum/filtered.length;
-
-
-
           var sortedByDatetimeData = _.sortBy(filteredData,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
-
-         
-            
 
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
-             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
+             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000);
        
 
           vm.filteredBaselineGrid.data = filteredData;
@@ -188,6 +189,9 @@
           $log.debug(response);
           if(response.id){
             vm.device = response;
+            if(!vm.device.baseline_value){
+              alert("No hay una linea base fijada, debe fijar una linea base en el menu superior.");
+            }
             vm.device.polucion = 0;
             //vm.drawGraphFromTime();
             vm.slider.options.disabled = vm.device.auto_supresor;
@@ -200,24 +204,9 @@
                 all: DeviceService.getUrlForDownload(response.id,'all')
             };
 
-            DeviceService.GetUserlist($stateParams.deviceId).then(function(response){
-              vm.device.users = response;
-            });
 
-            DeviceService.GetDataBaselinesFromDate(vm.device.id,'week').then(function(baselines){
-              //console.log("BASELINES:",baselines)
-              vm.availableBaselines = baselines;
-              if(vm.availableBaselines == 0){
-                //console.log(1);
-                 vm.drawGraphFromTime();
-              }else{
-                //console.log(2);
-                vm.currentBaseline = vm.availableBaselines[0];
-                vm.drawGraphFromTime();
-                logCurrentBaseline();
-              }
-
-            });
+            vm.drawGraphFromTime();
+            logCurrentBaseline();
 
           }
       });
@@ -230,16 +219,12 @@
           
           console.log(response);
           vm.mainGrid.data = response;
-          
           vm.originalDatapoints = _.cloneDeep(response);
-          
           vm.datapoints = response;
-        
-         
 
-          //if(vm.datapoints.length === 0){
-           //  return vm.hasEmptyDatapoints = true;
-          //}
+          if(vm.datapoints.length === 0){
+             return vm.hasEmptyDatapoints = true;
+          }
 
           calcular(vm.originalDatapoints);
           var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) 
@@ -247,12 +232,8 @@
           $scope.gauge.data[0].y  = 100*calc;
 
           var baseline = getBaseline();
-
-         
           _.remove(vm.datapoints, function(point){  return point.value_baseline || point.value_baseline === 0; });
-
-          if(_.last(vm.datapoints))
-          
+          if(_.last(vm.datapoints)) 
             vm.lastPolutionVal = _.last(vm.datapoints).value;
 
           var points = [];
@@ -286,21 +267,24 @@
               var dataValues = [];
               var dataBaselines = [];
               var dataTonelajes = [];
-              for(var index in vm.datapoints){
-                if(vm.datapoints[index].value)
-                  dataValues.push( [ (new Date(vm.datapoints[index].datetime)).getTime() , vm.datapoints[index].value]);
+              for(var index in vm.originalDatapoints){
 
-                if(vm.datapoints[index].value_baseline)
-                  dataBaselines.push( [ (new Date(vm.datapoints[index].datetime)).getTime() , vm.datapoints[index].value_baseline]);
 
-                if(vm.datapoints[index].tonelaje)
-                  dataTonelajes.push( [ (new Date(vm.datapoints[index].datetime)).getTime() , vm.datapoints[index].tonelaje]);
+                if(vm.originalDatapoints[index].value)
+                  dataValues.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value]);
+
+                if(vm.originalDatapoints[index].value_baseline)
+                  dataBaselines.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value_baseline]);
+
+                if(vm.originalDatapoints[index].tonelaje)
+                  dataTonelajes.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].tonelaje]);
 
               }
 
 
 
-              var options = {
+
+              vm.deviceGraphOptions = {
                    chart: {
                     zoomType: 'x'
                 },
@@ -335,7 +319,18 @@
                                     label: {
                                         text: 'Umbral de alerta'
                                     } 
-                                }]
+                                },
+                                {
+                                    value: vm.device.llp_ds,
+                                    color: 'green',
+                                    dashStyle: 'dash',
+                                    width: 1,
+                                    label: {
+                                        text: 'LLP DS 594'
+                                    } 
+                                }
+
+                                ]
                 },{
                   title: {
                           text: 'Tonelaje'
@@ -376,7 +371,7 @@
             }
             
             
-            vm.deviceGraph  = $('#time-chart').highcharts(options);
+            vm.deviceGraph  = $('#time-chart').highcharts(vm.deviceGraphOptions);
             console.log(vm.deviceGraph);
           }
           else if(vm.deviceGraph && vm.datapoints.length > 0){
@@ -400,34 +395,48 @@
 
       function getLast(){
             
-         DeviceService.GetDataPointsSince(vm.device.id, vm.datapoints[vm.datapoints.length -1].datetime ).then(function(response){
+        DeviceService.GetDataPointsSince(vm.device.id, vm.originalDatapoints[vm.originalDatapoints.length -1].datetime ).then(function(response){
             
-            _.forEach(response,function(point){
+          var chart = vm.deviceGraph.highcharts();    
+
+          _.forEach(response,function(point){
               vm.datapoints.push(point);
               vm.originalDatapoints.push(_.clone(point));
               if(point.value){
                  vm.lastPolutionVal = point.value;
               }
-            });
+              
+             
 
- 
+              if(point.value){
+                chart.series[0].addPoint(
+                    [ (new Date(point.datetime)).getTime() , point.value]
+                  , true);
+              }
+              if(point.value_baseline){
+                chart.series[1].addPoint(
+                    [ (new Date(point.datetime)).getTime() , point.value_baseline]
+                  , true);
+              }
+
+              if(point.tonelaje && vm.deviceGraph.length > 2){
+                chart.series[2].addPoint(
+                    [ (new Date(point.datetime)).getTime() , point.tonelaje]
+                  , true);
+              }
+
+          });
+
 
           calcular(vm.originalDatapoints);
-          var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) 
+          var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) ;
           $scope.gauge.data[0].y  = 100*calc;
-          
-            var baseline = getBaseline();
-
-            if(response.length > 0) {
-              //vm.deviceGraph.options.goals = [vm.deviceGraph.options.goals[0],baseline];
-              //vm.deviceGraph.setData(vm.datapoints);  
-            }
-
-            vm.loadTimeout = setTimeout(function(){ 
+          var baseline = getBaseline();
+          vm.loadTimeout = setTimeout(function(){ 
               getLast();
-            },vm.reloadTime);
+          },vm.reloadTime);
 
-         });
+        });
       }
 
       vm.updateTimespan = function(newTimespan){
@@ -458,8 +467,12 @@
           data = _.map(data, 'value');
           data = data.sort(function(a, b){return a-b; });
 
-          var percentil10 = Math.round(getPercentile(data,10)*100)/100; 
+           var percentil10 = Math.round(getPercentile(data,10)*100)/100; 
+          if(vm.device.percentil_inferior)
+            percentil10 = vm.device.percentil_inferior;
           var percentil90 = Math.round(getPercentile(data,90)*100)/100;
+          if(vm.device.percentil_superior)
+            percentil90 = vm.device.percentil_superior;
 
           var filtered = [];
         
@@ -528,12 +541,26 @@
       }
 
       function getBaseline(){
-        if(vm.currentBaseline && vm.currentBaseline.baseline)
-          return vm.currentBaseline.baseline;
+        if(vm.device.baseline_value)
+          return vm.device.baseline_value;
         else
           return 0;
       }
 
+
+       UserService.isAdmin()
+              .then(function (res) {
+                if(res && res.is){
+                  vm.isUserAdmin = true;
+                }
+              });
+
+        UserService.isDeviceAdmin(null,$stateParams.deviceId)
+                .then(function (res) {   
+                  if(res && res.is){
+                    vm.isUserDeviceAdmin = true;
+                  }
+                });
 
   }
 

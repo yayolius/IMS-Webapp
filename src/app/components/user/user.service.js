@@ -9,11 +9,20 @@
     function UserService($http,apiURL,$log,$rootScope) {
         var service = {};
 
+        service.All = All;
         service.Create = Create;
         service.Login = Login;
         service.Logout = Logout;
         service.GetById = GetById;
+        service.isAdmin = isAdmin;
         service.AllCurrentUserDevices = AllCurrentUserDevices;
+
+        service.AddAdminPrivileges = AddAdminPrivileges;
+        service.RemoveAdminPrivileges = RemoveAdminPrivileges;
+
+        service.isDeviceAdmin = isDeviceAdmin;
+        service.AddDeviceAdminPrivileges = AddDeviceAdminPrivileges;
+        service.RemoveDeviceAdminPrivileges = RemoveDeviceAdminPrivileges;
 
        /**
         service.GetAll = GetAll;
@@ -26,6 +35,9 @@
         
         return service;
  
+        function All() {
+            return $http.get(apiURL + '/api/Clients?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
         function Create(credentials) {
             return $http.post(apiURL + '/api/Clients', credentials).then(handleSuccess, handleError);
         }
@@ -45,6 +57,32 @@
 
         function GetById(id) {
             return $http.get(apiURL + '/api/Clients/' + id + '/?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
+
+        function isAdmin(id) {
+            if(!id){
+                id = $rootScope.globals.currentUser.userId;
+            }
+            return $http.get(apiURL + '/api/Clients/' + id + '/is/admin?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
+
+        function AddAdminPrivileges(id) {
+            return $http.get(apiURL + '/api/Clients/' + id + '/set/admin?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
+        function RemoveAdminPrivileges(id) {
+            return $http.get(apiURL + '/api/Clients/' + id + '/unset/admin?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
+        function isDeviceAdmin(id,deviceid) {
+            if(!id){
+                id = $rootScope.globals.currentUser.userId;
+            }
+            return $http.get(apiURL + '/api/Clients/' + id + '/is/Device/'+deviceid+'/admin?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
+        function AddDeviceAdminPrivileges(id,deviceid) {
+            return $http.get(apiURL + '/api/Clients/' + id + '/set/Device/'+deviceid+'/admin?access_token=' + getToken()).then(handleSuccess, handleError);
+        }
+        function RemoveDeviceAdminPrivileges(id,deviceid) {
+            return $http.get(apiURL + '/api/Clients/' + id + '/unset/Device/'+deviceid+'/admin?access_token=' + getToken()).then(handleSuccess, handleError);
         }
 
         function getToken(){
@@ -79,6 +117,7 @@
         // private functions
  
         function handleSuccess(res) {
+            
             if(res.data)
                 return res.data;
             else
@@ -86,7 +125,7 @@
         }
  
         function handleError(res) {
-            $log.info(res);
+            
             var messages = [];
             if(res.data && res.data.error && res.data.error.details){
                 for(var index in res.data.error.details.messages){

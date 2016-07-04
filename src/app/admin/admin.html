@@ -1,0 +1,47 @@
+<div id="wrapper">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <header-navbar></header-navbar>
+        <acme-navbar></acme-navbar>
+    </nav>
+
+    <div id="page-wrapper">
+    	<div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header"><i class="fa fa-cog"></i> Admin</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <div class="row">
+            <div class="col-md-12 ">
+                <div class="col-md-12 ">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Usuarios</h3>
+                      </div>
+                      <div class="panel-body">
+                         <ul class="list-group">
+                          <li class="list-group-item" ng-repeat="user in vm.users">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    {{user.id}}
+                                </div>
+                                <div class="col-md-3">
+                                    {{user.email}}
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="btn btn-xs btn-success" ng-if="user.isAdmin === true">Es Administrador</span>
+                                    <a class="btn btn-xs btn-primary" ng-if="user.isAdmin === false" ng-click="vm.doAdmin($index)" >Hacer administrador</a>
+                                    <a class="btn btn-xs btn-danger" ng-if="user.isAdmin === true && user.email!='yayolius@gmail.com'" ng-click="vm.doUnAdmin($index)" >Quitar Administración</a>
+                                </div>
+                            </div>
+                          </li>
+                         </ul>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

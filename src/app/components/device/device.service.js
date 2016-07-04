@@ -21,7 +21,9 @@
         service.GetDataPointsSince = GetDataPointsSince;
         service.getUrlForDownload = getUrlForDownload;
         service.GetDataBaselinesFromDate = GetDataBaselinesFromDate;
-    
+        service.RemoveBaselines = RemoveBaselines;
+        service.ExportBaselines = ExportBaselines;
+        
         return service;
  
 
@@ -58,6 +60,14 @@
 
         function UpdateDevice(deviceId,data){
             return $http.put(apiURL + '/api/Devices/'+ deviceId +'?access_token=' +  $rootScope.globals.currentUser.sesionId,data  ).then(handleSuccess, handleError);
+        }
+
+        function RemoveBaselines(deviceId,data){
+            return $http.post(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/baselines/delete?access_token=' +  $rootScope.globals.currentUser.sesionId,{ baselines: data }  ).then(handleSuccess, handleError);
+        }
+
+        function ExportBaselines(deviceId,data){
+            return $http.post(apiURL + '/api/Devices/'+ deviceId +'/Datapoints/baselines/export?access_token=' +  $rootScope.globals.currentUser.sesionId,{ baselines: data }  ).then(handleSuccess, handleError);
         }
 
         function AssignCurrentUserToDevice(deviceId){

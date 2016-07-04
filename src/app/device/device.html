@@ -16,7 +16,13 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header"><i class="fa fa-bar-chart-o fa-fw"></i></a> Sensor {{vm.device.name}} <small class="pull-right"><a class="settings-link" href="#/devices/{{vm.device.id}}/settings">Configurar dispositivo <i class="fa fa-cog"></i></a></small></h1>
+                    <h1 class="page-header"><i class="fa fa-bar-chart-o fa-fw"></i></a> Sensor {{vm.device.name}}
+                     
+                      <span ng-if="vm.isUserAdmin || vm.isUserDeviceAdmin">
+                       <small class="pull-right"><a class="settings-link" href="#/devices/{{vm.device.id}}/settings">Configurar dispositivo <i class="fa fa-cog"></i></a></small>
+                       <small class="pull-right" style="margin:0 24px;"><a class="settings-link" href="#/devices/{{vm.device.id}}/baselines"> Lineas base <i class="fa fa-line-chart"></i></a></small>
+                      </span>
+                    </h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -58,25 +64,7 @@
                 </div>
             </div>
             <div class="row" >
-                <div class="col-md-12 ">
-                    <div class="panel panel-info">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Seleccionar baseline de los siguientes obtenidos esta semana</h3>
-                      </div>
-                      <div class="panel-body">
-                        <a class="btn btn-xs btn-default col-md-3" ng-class="{'active': baseline.from == vm.currentBaseline.from }"  ng-repeat="baseline in vm.availableBaselines" ng-click="vm.selectBaseline(baseline)">
-                           <h4>{{baseline.baseline}}</h4>
-                           <p>
-                             <small>
-                             <strong>{{baseline.count}} puntos</strong> <br />
-                              {{baseline.from | date:'EEEE dd/MM/y  HH:mm:ss'}}  - <br /> 
-                             {{baseline.to | date:'EEEE dd/MM/y  HH:mm:ss' }}</small>
-                           </p>
-                        </a>
-                         <h3 class="text-danger text-center" ng-if="vm.availableBaselines.length == 0">No se han recibido datos de linea base en la ultima semana, por favor revisar el dispositivo</h3>
-                      </div>
-                    </div>
-                </div>
+  
               <div class="col-md-12 " ng-if="vm.hasEmptyDatapoints">
                 <h3 class="text-danger text-center" ng-if="vm.viewTimespan == 'hour'">No se han recibido datos en la última hora, <a href="javascript:;" ng-click="vm.updateTimespan('day')">prueba cargando el último dia</a>  <br /><br /></h3>
 
@@ -168,8 +156,8 @@
                     <div class="panel-body">
                       <div class="data">
                         <ul>
-                          <li>Percentil 10: {{vm.filteredGrid.p10}}</li>
-                          <li>Percentil 90: {{vm.filteredGrid.p90}}</li>
+                          <li>Percentil Inferior: {{vm.filteredGrid.p10}}</li>
+                          <li>Percentil Superior: {{vm.filteredGrid.p90}}</li>
                           <li>Suma: {{vm.filteredGrid.sum}}</li>
                           <li>Promedio: {{vm.filteredGrid.averageValue}}</li>
                         </ul>
@@ -197,8 +185,8 @@
                       <div class="panel-body">
                         <div class="data">
                           <ul>
-                            <li>Percentil 10: {{vm.filteredBaselineGrid.p10}}</li>
-                            <li>Percentil 90: {{vm.filteredBaselineGrid.p90}}</li>
+                            <li>Percentil Inferior: {{vm.filteredBaselineGrid.p10}}</li>
+                            <li>Percentil Superior: {{vm.filteredBaselineGrid.p90}}</li>
                             <li>Suma: {{vm.filteredBaselineGrid.sum}}</li>
                             <li>Promedio: {{vm.filteredBaselineGrid.averageValue}}</li>
                           </ul>
@@ -244,19 +232,6 @@
 
                  <div class="col-md-12 ">
                     <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Email de usuarios asociados a este dispositivo</h3>
-                      </div>
-                      <div class="panel-body">
-                         <ul class="list-group">
-                          <li class="list-group-item" ng-repeat="user in vm.device.users">{{user.email}}</li>
-                         </ul>
-                      </div>
-                    </div>
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Administración</h3>
-                      </div>
                       <div class="panel-body">
                         <form name="formUnassignDevice" novalidate role="form"  >
                           <fieldset>                                                  

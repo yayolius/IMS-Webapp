@@ -26,6 +26,9 @@
                         <li>
                             <a href="#/devices/assign"><i class="fa fa-plus fa-fw"></i> Agregar Dispositivo</a>
                         </li>
+                        <li ng-if="vm.isAdmin" class="admin">
+                            <a href="#/admin"><i class="fa fa-cog fa-fw"></i> ADMIN</a>
+                        </li>
 
                     </ul>
                 </div>

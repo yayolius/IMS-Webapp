@@ -137,6 +137,32 @@
                       </div>
                     </div>
                 </div>
+
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Usuarios asociados a este dispositivo</h3>
+                  </div>
+                  <div class="panel-body">
+
+                     <ul class="list-group">
+                      <li class="list-group-item" ng-repeat="user in vm.deviceUsers">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{user.email}}
+                            </div>
+                            <div class="col-md-6">
+                                <span class="btn btn-xs btn-success" ng-if="user.isDeviceAdmin === true">Es Administrador del dispositivo</span>
+                                <a class="btn btn-xs btn-primary" ng-if="user.isDeviceAdmin === false" ng-click="vm.doDeviceAdmin($index)" >Hacer administrador del dispositivo</a>
+                                <a class="btn btn-xs btn-danger" ng-if="user.isDeviceAdmin === true && user.id != vm.currentUserId" ng-click="vm.undoDeviceAdmin($index)" >Quitar Administración del dispositivo</a>
+                            </div>
+                        </div>
+                      </li>
+                     </ul>
+                  </div>
+                </div>
+
+
             </div>
 
     </div>
