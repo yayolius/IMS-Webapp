@@ -25,14 +25,13 @@
         templateUrl: 'app/register/register.html',
         controller: 'RegisterController',
         controllerAs: 'vm'
-      }) 
+      })
       .state('logout', {
         url: '/logout',
         templateUrl: 'app/logout/logout.html',
         controller: 'LogoutController',
         controllerAs: 'vm'
       })
-     
       .state('devices-assign', {
         url: '/devices/assign',
         templateUrl: 'app/assignDevice/assign.device.html',

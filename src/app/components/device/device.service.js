@@ -1,10 +1,10 @@
 (function () {
     'use strict';
- 
+
     angular
         .module('webapp')
         .factory('DeviceService', DeviceService);
- 
+
     DeviceService.$inject = ['$http','apiURL','$log','$rootScope'];
     function DeviceService($http,apiURL,$log,$rootScope) {
         var service = {};
@@ -23,9 +23,9 @@
         service.GetDataBaselinesFromDate = GetDataBaselinesFromDate;
         service.RemoveBaselines = RemoveBaselines;
         service.ExportBaselines = ExportBaselines;
-        
+
         return service;
- 
+
 
         function All() {
             return $http.get(apiURL + '/api/Devices?access_token=' +  $rootScope.globals.currentUser.sesionId).then(handleSuccess, handleError);
@@ -77,21 +77,21 @@
         function UnAsignCurrentUserToDevice(deviceId){
             return $http.delete(apiURL + '/api/Devices/'+ deviceId +'/Clients/rel/' + $rootScope.globals.currentUser.userId + '?access_token=' +  $rootScope.globals.currentUser.sesionId ).then(handleSuccess, handleError);
         }
-    
-        function getUrlForDownload(deviceId,timespan){
+
+        function getUrlForDownload(deviceId, timespan){
             return  apiURL + '/api/Devices/'+deviceId+'/Datapoints/'+ timespan+'/export?access_token=' + $rootScope.globals.currentUser.sesionId;
         }
 
- 
-        // private functions
- 
+
+      // private functions
+
         function handleSuccess(res) {
             if(res.data)
                 return res.data;
             else
                 return {};
         }
- 
+
         function handleError(res) {
             $log.info(res);
             var messages = [];
@@ -102,10 +102,10 @@
             }else if( res.data.error.message ){
                 messages.push(  res.data.error.message );
             }
-            
+
             return { success: false, message: messages.join(", ") };
-            
+
         }
     }
- 
+
 })();
