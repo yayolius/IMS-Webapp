@@ -119,9 +119,11 @@
       function logCurrentBaseline(){
         //console.log("XXXX",vm.currentBaseline);
         if(vm.currentBaseline && vm.currentBaseline.allvalues){
+          
           vm.baselineGrid.data = vm.currentBaseline.allvalues;
 
           var values =  _.reject(vm.baselineGrid.data, function(o) { return o.value || o.value === 0; });
+          
           var dataObjArr = _.cloneDeep(values);
           var data = _.cloneDeep(values);
           var filteredData = [];
@@ -131,10 +133,10 @@
 
           var percentil10 = Math.round(getPercentile(data,10)*100)/100; 
           if(vm.device.percentil_inferior)
-            percentil10 = vm.device.percentil_inferior;
+            percentil10 = Math.round(getPercentile(data,vm.device.percentil_inferior)*100)/100;
           var percentil90 = Math.round(getPercentile(data,90)*100)/100;
           if(vm.device.percentil_superior)
-            percentil90 = vm.device.percentil_superior;
+            percentil90 = Math.round(getPercentile(data,vm.device.percentil_superior)*100)/100;
 
           var filtered = [];
         
@@ -145,6 +147,8 @@
                filteredData.push(dataObjArr[index]);
             } 
           }
+  
+          var freq = (( (new Date(vm.currentBaseline.to)  ).getTime()-(new Date(vm.currentBaseline.from)).getTime())/(60*60*1000))/vm.currentBaseline.totalCount;
 
           var sum = 0;
           filtered.forEach(function(item){
@@ -160,11 +164,15 @@
        
 
           vm.filteredBaselineGrid.data = filteredData;
-          vm.filteredBaselineGrid.p10 = percentil10;
-          vm.filteredBaselineGrid.p90 = percentil90;
+          vm.filteredBaselineGrid.p10Value = percentil10;
+          vm.filteredBaselineGrid.p90Value = percentil90;
+          vm.filteredBaselineGrid.p10 = vm.device.percentil_inferior;
+          vm.filteredBaselineGrid.p90 = vm.device.percentil_superior;
           vm.filteredBaselineGrid.sum = sum;
+          vm.filteredBaselineGrid.freq = freq;
           vm.filteredBaselineGrid.averageValue = averageValue;
-          vm.filteredBaselineGrid.totalHours = totalHours;
+          vm.filteredBaselineGrid.totalHours = filteredData.length*freq;
+          vm.filteredBaselineGrid.averageTonelaje = vm.currentBaseline.tonelajeAvg;
         }
       }
 
@@ -204,10 +212,16 @@
                 all: DeviceService.getUrlForDownload(response.id,'all')
             };
 
-
-            vm.drawGraphFromTime();
-            logCurrentBaseline();
-
+            DeviceService.GetDataBaselinesFromDate(vm.device.id,'all').then(function(baselines){
+              vm.availableBaselines = baselines;
+              _.forEach(vm.availableBaselines,function (baseline) {
+                if(vm.device.baseline_from == baseline.from && vm.device.baseline_value == baseline.baseline){
+                  vm.currentBaseline = baseline;
+                }
+              });
+              logCurrentBaseline();
+              vm.drawGraphFromTime();
+            });
           }
       });
 
@@ -227,7 +241,9 @@
           }
 
           calcular(vm.originalDatapoints);
-          var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) 
+
+          var out = (vm.filteredGrid.sum / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.sum / (vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje));
+          var calc =  1 - out; 
 
           $scope.gauge.data[0].y  = 100*calc;
 
@@ -429,9 +445,12 @@
 
 
           calcular(vm.originalDatapoints);
-          var calc =  1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) ;
-          $scope.gauge.data[0].y  = 100*calc;
-          var baseline = getBaseline();
+
+          var out = (vm.filteredGrid.sum / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.sum / (vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje));
+          var calc =  1 - out; 
+          $scope.gauge.data[0].y = 100*calc;
+          
+
           vm.loadTimeout = setTimeout(function(){ 
               getLast();
           },vm.reloadTime);
@@ -469,10 +488,10 @@
 
            var percentil10 = Math.round(getPercentile(data,10)*100)/100; 
           if(vm.device.percentil_inferior)
-            percentil10 = vm.device.percentil_inferior;
+            percentil10 =  Math.round(getPercentile(data,vm.device.percentil_inferior)*100)/100;
           var percentil90 = Math.round(getPercentile(data,90)*100)/100;
           if(vm.device.percentil_superior)
-            percentil90 = vm.device.percentil_superior;
+            percentil90 = Math.round(getPercentile(data,vm.device.percentil_superior)*100)/100;
 
           var filtered = [];
         
@@ -505,13 +524,19 @@
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
              totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
        
-          vm.filteredGrid.p10 = percentil10;
-          vm.filteredGrid.p90 = percentil90;
+          var freq = totalHours/dataset.length;
+          totalHours = totalHours * filtered.length;
+
+          vm.filteredGrid.p10Value = percentil10;
+          vm.filteredGrid.p90Value = percentil90;
+          vm.filteredGrid.p10 = vm.device.percentil_inferior;
+          vm.filteredGrid.p90 = vm.device.percentil_superior;
           vm.filteredGrid.sum = sum;
           vm.filteredGrid.data = filteredData;
           vm.filteredGrid.averageValue = averageValue;
           vm.filteredGrid.averageTonelaje = averageTonelaje;
           vm.filteredGrid.averageBaseline = averageBaseline;
+          vm.filteredGrid.freq = freq;
           vm.filteredGrid.totalHours = totalHours;
          
 
@@ -520,24 +545,9 @@
             $log.error("isNaN(averageValue)",isNaN(averageValue),"isNaN(averageTonelaje)",isNaN(averageTonelaje),"isNaN(averageBaseline ",isNaN(averageBaseline),"isNaN(totalHours)",isNaN(totalHours));
             return 0;
           }
-          if( totalHours * averageTonelaje  === 0) return 0;
-          if( (( averageBaseline  ) / (  totalHours * averageTonelaje )) === 0) return 0;
-          
-          var output =  Math.floor( 
-                                    (
-                                        1 - 
-                                          ( ( averageValue    ) / ( totalHours * averageTonelaje ) )
-                                                                / 
-                                          ( ( averageBaseline ) / (  totalHours * averageTonelaje ) ) 
+  
 
-                                    ) * 100000
-                                  )
-                                  / 
-                                  100000;
-          
-          vm.filteredGrid.indicador = output;
-
-          return output;
+          return 0;
       }
 
       function getBaseline(){

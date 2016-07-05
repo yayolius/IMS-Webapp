@@ -29,9 +29,6 @@
 
         DeviceService.GetDataBaselinesFromDate(vm.device.id,'all').then(function(baselines){
           vm.availableBaselines = baselines;
-          if(vm.availableBaselines.length > 0){
-            vm.currentBaseline = vm.availableBaselines[0];
-          }
           setTimeout(function(){drawBaselines();},50);
         });
   		}

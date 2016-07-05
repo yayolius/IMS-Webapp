@@ -132,18 +132,18 @@
                     </div>
                     <div class="panel-body">
                    <p style="white-space: pre; margin:0; "> 
-                          1 -  ( ( PromedioDeValores    ) / ( HorasTotales * TonelajePromedio ) )  /  ( ( PromedioDeBaselines ) / (  HorasTotalesBaseline * TonelajePromedio ) ) </p> 
+                          1 -  ( ( SumaDeValores ) / ( HorasTotales * TonelajePromedio ) )  /  ( ( SumaDeBaselines ) / (  HorasTotalesBaseline * TonelajePromedio ) ) </p> 
 
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredBaselineGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) ) </p>
+                          1 -  ( ( {{vm.filteredGrid.sum}} ) / ( {{vm.filteredGrid.totalHours}} * {{vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.sum}} ) / (  {{vm.filteredBaselineGrid.totalHours}} * {{vm.filteredBaselineGrid.averageTonelaje}} ) ) </p>
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  ( ( {{vm.filteredGrid.averageValue}}    ) / ( {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.averageValue}} ) / (  {{vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )</p>
+                          1 -  ( ( {{vm.filteredGrid.sum}} ) / ( {{vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje}} ) )  /  ( ( {{vm.filteredBaselineGrid.sum}} ) / (  {{vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje}} ) )</p>
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  (  {{vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}   /   {{vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje) }}  )</p>
+                          1 -  (  {{vm.filteredGrid.sum / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje) }}   /   {{vm.filteredBaselineGrid.sum / (vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje) }}  )</p>
                     <p style="white-space: pre; margin:0;"> 
-                          1 -  (  {{ (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  )</p>
+                          1 -  (  {{ (vm.filteredGrid.sum / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.sum / (vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje)) }}  )</p>
                     <p style="white-space: pre;"> 
-                          <strong>Total:</strong>   {{ 1 - (vm.filteredGrid.averageValue / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.averageValue / (vm.filteredBaselineGrid.totalHours * vm.filteredGrid.averageTonelaje)) }}  </p>
+                          <strong>Total:</strong>   {{ 1 - (vm.filteredGrid.sum / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.sum / (vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje)) }}  </p>
 
                     </div>
                   </div>
@@ -156,10 +156,13 @@
                     <div class="panel-body">
                       <div class="data">
                         <ul>
-                          <li>Percentil Inferior: {{vm.filteredGrid.p10}}</li>
-                          <li>Percentil Superior: {{vm.filteredGrid.p90}}</li>
-                          <li>Suma: {{vm.filteredGrid.sum}}</li>
+                          <li>Percentil Inferior: {{vm.filteredGrid.p10}} ({{vm.filteredGrid.p10Value}})</li>
+                          <li>Percentil Superior: {{vm.filteredGrid.p90}} ({{vm.filteredGrid.p90Value}})</li>
                           <li>Promedio: {{vm.filteredGrid.averageValue}}</li>
+                          <li>Suma: {{vm.filteredGrid.sum}}</li>
+                          <li>Freq: {{vm.filteredGrid.freq}}</li>
+                          <li>HorasTotales: {{vm.filteredGrid.totalHours}}</li>
+                          
                         </ul>
                       </div>
                       <div id="grid1" ui-grid="vm.mainGrid" ></div>
@@ -185,10 +188,12 @@
                       <div class="panel-body">
                         <div class="data">
                           <ul>
-                            <li>Percentil Inferior: {{vm.filteredBaselineGrid.p10}}</li>
-                            <li>Percentil Superior: {{vm.filteredBaselineGrid.p90}}</li>
+                            <li>Percentil Inferior: {{vm.filteredBaselineGrid.p10}} ({{vm.filteredBaselineGrid.p10Value}})</li>
+                            <li>Percentil Superior: {{vm.filteredBaselineGrid.p90}} ({{vm.filteredBaselineGrid.p90Value}})</li>
                             <li>Suma: {{vm.filteredBaselineGrid.sum}}</li>
                             <li>Promedio: {{vm.filteredBaselineGrid.averageValue}}</li>
+                            <li>Freq: {{vm.filteredBaselineGrid.freq}}</li>
+                            <li>HorasTotales: {{vm.filteredBaselineGrid.totalHours}}</li>
                           </ul>
                         </div>
                         <div id="grid2" ui-grid="vm.baselineGrid" ></div>
