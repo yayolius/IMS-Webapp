@@ -72,7 +72,7 @@
             vm.availableBaselines[i].allvalues.sort(function(a,b){ return (new Date(a.datetime)).getTime()- (new Date(b.datetime)).getTime() });
             for(var index in vm.availableBaselines[i].allvalues){
               if(vm.availableBaselines[i].allvalues[index].value_baseline)
-                dataBaselines.push( [ (new Date(vm.availableBaselines[i].allvalues[index].datetime)).getTime() , vm.availableBaselines[i].allvalues[index].value_baseline]);     
+                dataBaselines.push( [ (new Date(vm.availableBaselines[i].allvalues[index].datetime)).getTime() - (new Date(vm.availableBaselines[i].allvalues[index].datetime)).getTimezoneOffset()*60*1000 , vm.availableBaselines[i].allvalues[index].value_baseline]);     
             }
 
 

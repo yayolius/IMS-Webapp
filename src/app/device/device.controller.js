@@ -150,7 +150,7 @@
 
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
-             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000);
+             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() + (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000);
        
 
           vm.filteredBaselineGrid.data = filteredData;
@@ -276,14 +276,16 @@
               for(var index in vm.originalDatapoints){
 
 
+                var datepoint = (new Date(vm.originalDatapoints[index].datetime));
+
                 if(vm.originalDatapoints[index].value)
-                  dataValues.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value]);
+                  dataValues.push( [ datepoint.getTime() -  datepoint.getTimezoneOffset()*60*1000 , vm.originalDatapoints[index].value]);
 
                 if(vm.originalDatapoints[index].value_baseline)
-                  dataBaselines.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value_baseline]);
+                  dataBaselines.push( [ datepoint.getTime() - datepoint.getTimezoneOffset()*60*1000 , vm.originalDatapoints[index].value_baseline]);
 
                 if(vm.originalDatapoints[index].tonelaje)
-                  dataTonelajes.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].tonelaje]);
+                  dataTonelajes.push( [ datepoint.getTime() - datepoint.getTimezoneOffset()*60*1000 , vm.originalDatapoints[index].tonelaje]);
 
               }
 
@@ -390,15 +392,16 @@
             var dataBaselines = [];
             var dataTonelajes = [];
             for(var index in vm.originalDatapoints){
+              var datepoint = (new Date(vm.originalDatapoints[index].datetime));
 
               if(vm.originalDatapoints[index].value)
-                dataValues.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value]);
+                dataValues.push( [ datepoint.getTime() -  datepoint.getTimezoneOffset()*60*1000 , vm.originalDatapoints[index].value]);
 
               if(vm.originalDatapoints[index].value_baseline)
-                dataBaselines.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value_baseline]);
+                dataBaselines.push( [ datepoint.getTime() - datepoint.getTimezoneOffset()*60*1000 , vm.originalDatapoints[index].value_baseline]);
 
               if(vm.originalDatapoints[index].tonelaje)
-                dataTonelajes.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].tonelaje]);
+                dataTonelajes.push( [ datepoint.getTime() - datepoint.getTimezoneOffset()*60*1000 , vm.originalDatapoints[index].tonelaje]);
 
             }
 
@@ -440,18 +443,18 @@
 
               if(point.value){
                 chart.series[0].addPoint(
-                    [ (new Date(point.datetime)).getTime() , point.value]
+                    [ (new Date(point.datetime)).getTime() - (new Date(point.datetime)).getTimezoneOffset()*60*1000 , point.value]
                   , true);
               }
               if(point.value_baseline){
                 chart.series[1].addPoint(
-                    [ (new Date(point.datetime)).getTime() , point.value_baseline]
+                    [ (new Date(point.datetime)).getTime() - (new Date(point.datetime)).getTimezoneOffset()*60*1000 , point.value_baseline]
                   , true);
               }
 
               if(point.tonelaje && chart.series.length > 2){
                 chart.series[2].addPoint(
-                    [ (new Date(point.datetime)).getTime() , point.tonelaje]
+                    [ (new Date(point.datetime)).getTime() - (new Date(point.datetime)).getTimezoneOffset()*60*1000 , point.tonelaje]
                   , true);
               }
 
@@ -488,7 +491,7 @@
 
           var sortedByDateUnfilteredTimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
           if(_.last(sortedByDateUnfilteredTimeData)) {
-           var totalHoursUnfiltered = ( (new Date(_.last(sortedByDateUnfilteredTimeData).datetime)).getTime() - (new Date(_.first(sortedByDateUnfilteredTimeData).datetime)).getTime())/(60*60*1000);
+           var totalHoursUnfiltered = ( (new Date(_.last(sortedByDateUnfilteredTimeData).datetime)).getTime() + (new Date(_.first(sortedByDateUnfilteredTimeData).datetime)).getTime())/(60*60*1000);
           }else{
             var totalHoursUnfiltered = 0;
           }
@@ -536,7 +539,7 @@
 
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
-             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
+             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() + (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
        
           var freq = totalHours/dataset.length;
           totalHours = totalHours * filtered.length;
