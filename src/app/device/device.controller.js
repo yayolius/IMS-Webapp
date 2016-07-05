@@ -104,17 +104,7 @@
         return cutOff;
       }
 
-      vm.selectBaseline = function(bsline){
-        if(!vm.currentBaseline){
-          vm.currentBaseline = bsline;
-          vm.drawGraphFromTime();
-        }else{
-          vm.currentBaseline = bsline;
-          getLast(); 
-        }
-
-        logCurrentBaseline();
-      }
+ 
 
       function logCurrentBaseline(){
         //console.log("XXXX",vm.currentBaseline);
@@ -365,19 +355,22 @@
                 
                     type: 'line',
                     name: 'Concentración de Polvo (mg/m3)',
-                    data: dataValues
+                    data: dataValues,
+                    width: 1
                 },
                 {
                     
                     type: 'line',
                     name: 'Linea base concentración de Polvo (mg/m3)',
-                    data: dataBaselines
+                    data: dataBaselines,
+                    width: 1
                 },
                 {
                     yAxis: 1,
                     type: 'line',
                     name: 'Toneladas de Mineral (ton/hra)',
-                    data: dataTonelajes
+                    data: dataTonelajes,
+                    width: 1
                 }]
             }
             
@@ -391,11 +384,32 @@
             console.log(vm.deviceGraph);
           }
           else if(vm.deviceGraph && vm.datapoints.length > 0){
-            
-            //console.log(vm.deviceGraph.options.goals, baseline)
+            var chart = vm.deviceGraph.highcharts();    
 
-            //vm.deviceGraph.options.goals = [vm.deviceGraph.options.goals[0],baseline];
-            //vm.deviceGraph.setData(vm.datapoints);
+            var dataValues = [];
+            var dataBaselines = [];
+            var dataTonelajes = [];
+            for(var index in vm.originalDatapoints){
+
+              if(vm.originalDatapoints[index].value)
+                dataValues.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value]);
+
+              if(vm.originalDatapoints[index].value_baseline)
+                dataBaselines.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].value_baseline]);
+
+              if(vm.originalDatapoints[index].tonelaje)
+                dataTonelajes.push( [ (new Date(vm.originalDatapoints[index].datetime)).getTime() , vm.originalDatapoints[index].tonelaje]);
+
+            }
+
+            chart.series[0].setData(dataValues);
+            chart.series[1].setData(dataBaselines);
+  
+            if(chart.series.length > 2){
+                chart.series[1].setData(dataTonelajes);
+            }
+           
+            //chart.redraw();
             
 
           }else if(vm.datapoints.length === 0){
@@ -435,7 +449,7 @@
                   , true);
               }
 
-              if(point.tonelaje && vm.deviceGraph.length > 2){
+              if(point.tonelaje && chart.series.length > 2){
                 chart.series[2].addPoint(
                     [ (new Date(point.datetime)).getTime() , point.tonelaje]
                   , true);
@@ -449,7 +463,7 @@
           var out = (vm.filteredGrid.sum / (vm.filteredGrid.totalHours * vm.filteredGrid.averageTonelaje))   /  (vm.filteredBaselineGrid.sum / (vm.filteredBaselineGrid.totalHours * vm.filteredBaselineGrid.averageTonelaje));
           var calc =  1 - out; 
           $scope.gauge.data[0].y = 100*calc;
-          
+
 
           vm.loadTimeout = setTimeout(function(){ 
               getLast();
@@ -459,7 +473,7 @@
       }
 
       vm.updateTimespan = function(newTimespan){
-        //alert(newTimespan);
+        
         clearTimeout(vm.loadTimeout);
         vm.viewTimespan = newTimespan;
         vm.drawGraphFromTime();
