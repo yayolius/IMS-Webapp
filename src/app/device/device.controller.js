@@ -539,10 +539,13 @@
 
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
-             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() + (new Date(_.first(sortedByDatetimeData).datetime)).getTime())/(60*60*1000)
-       
+             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime() )/(60*60*1000)
+           
+      
           var freq = totalHours/dataset.length;
           totalHours = totalHours * filtered.length;
+
+
 
           vm.filteredGrid.p10Value = percentil10;
           vm.filteredGrid.p90Value = percentil90;
