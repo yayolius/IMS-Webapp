@@ -24,6 +24,10 @@
         $location.path('/login');
       }
 
+      if(loggedIn && $.inArray($location.path(), ['/login']) >= 0) {
+         $location.path('/dashboard');
+      }
+
       if($.inArray($location.path(), ['/admin']) >= 0) {
          UserService.isAdmin()
               .then(function (res) {
