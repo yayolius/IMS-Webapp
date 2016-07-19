@@ -8,7 +8,6 @@
   /** @ngInject */
   function DeviceController($scope,$log,DeviceService,UserService,$stateParams,$location,$filter) {
      
-
       var vm = this;
 
       vm.device = { name: ""};
@@ -49,6 +48,12 @@
         showGridFooter: true,
         showColumnFooter: true
       };
+
+
+
+
+
+
 
       $scope.gauge = {
                           columns: 
@@ -199,7 +204,8 @@
                 day: DeviceService.getUrlForDownload(response.id,'day'),
                 week: DeviceService.getUrlForDownload(response.id,'week'),
                 month: DeviceService.getUrlForDownload(response.id,'month'),
-                all: DeviceService.getUrlForDownload(response.id,'all')
+                all: DeviceService.getUrlForDownload(response.id,'all'),
+                range: DeviceService.getUrlForDownloadRange(response.id,$scope.dt_from,$scope.dt_to)
             };
 
             DeviceService.GetDataBaselinesFromDate(vm.device.id,'all').then(function(baselines){
@@ -592,6 +598,99 @@
                   }
                 });
 
+
+
+        /*** Datepicker config *****/
+
+        $scope.dt_from = new Date(  (new Date()).getTime() - 3600*24*1000);
+        $scope.dt_to = new Date();
+
+        
+
+
+        $scope.dateOptions = {
+          dateDisabled: disabled,
+          formatYear: 'yy',
+          maxDate:  new Date(),
+          minDate: new Date(  (new Date()).getTime() - 3600*24*365*1000),
+        };
+
+        // Disable weekend selection
+        function disabled(data) {
+          var date = data.date,
+            mode = data.mode;
+          return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+        }
+
+
+        $scope.open1 = function() {
+          $scope.popup1.opened = true;
+        };
+
+        $scope.open2 = function() {
+          $scope.popup2.opened = true;
+        };
+
+        $scope.setDate = function(year, month, day) {
+          $scope.dt = new Date(year, month, day);
+        };
+
+        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+        $scope.format = $scope.formats[0];
+        $scope.altInputFormats = ['M!/d!/yyyy'];
+
+        $scope.popup1 = {
+          opened: false
+        };
+
+        $scope.popup2 = {
+          opened: false
+        };
+
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        var afterTomorrow = new Date();
+        afterTomorrow.setDate(tomorrow.getDate() + 1);
+        $scope.events = [
+          {
+            date: tomorrow,
+            status: 'full'
+          },
+          {
+            date: afterTomorrow,
+            status: 'partially'
+          }
+        ];
+
+        function getDayClass(data) {
+          var date = data.date,
+            mode = data.mode; 
+          if (mode === 'day') {
+            var dayToCheck = new Date(date).setHours(0,0,0,0);
+
+            for (var i = 0; i < $scope.events.length; i++) {
+              var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+
+              if (dayToCheck === currentDay) {
+                return $scope.events[i].status;
+              }
+            }
+          }
+
+          return ''; 
+        }
+
+
+      $scope.$watch("dt_from", function(newValue,oldValue) {
+        if(newValue.getTime()>$scope.dt_to.getTime()) return false;
+        if(vm.downloadUrls && vm.downloadUrls.range)
+          vm.downloadUrls.range = DeviceService.getUrlForDownloadRange(vm.device.id,$scope.dt_from,$scope.dt_to);
+      });
+      $scope.$watch("dt_to", function(newValue,oldValue) {
+        if(newValue.getTime()<$scope.dt_to.getTime()) return false;
+        if(vm.downloadUrls && vm.downloadUrls.range)
+          vm.downloadUrls.range = DeviceService.getUrlForDownloadRange(vm.device.id,$scope.dt_from,$scope.dt_to);
+      });
   }
 
 })();

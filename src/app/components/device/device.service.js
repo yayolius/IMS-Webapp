@@ -20,6 +20,7 @@
         service.UnAsignCurrentUserToDevice = UnAsignCurrentUserToDevice;
         service.GetDataPointsSince = GetDataPointsSince;
         service.getUrlForDownload = getUrlForDownload;
+        service.getUrlForDownloadRange = getUrlForDownloadRange;
         service.GetDataBaselinesFromDate = GetDataBaselinesFromDate;
         service.RemoveBaselines = RemoveBaselines;
         service.ExportBaselines = ExportBaselines;
@@ -80,6 +81,9 @@
 
         function getUrlForDownload(deviceId, timespan){
             return  apiURL + '/api/Devices/'+deviceId+'/Datapoints/'+ timespan+'/export?access_token=' + $rootScope.globals.currentUser.sesionId;
+        }
+         function getUrlForDownloadRange(deviceId, from,to){
+            return  apiURL + '/api/Devices/'+deviceId+'/Datapoints/range/export?access_token=' + $rootScope.globals.currentUser.sesionId + '&from='+from.getTime()+'&to='+to.getTime();
         }
 
 

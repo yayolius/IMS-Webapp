@@ -109,14 +109,38 @@
                       </div>
                       <div class="panel-footer">
                         <h4>Exportar datos</h4>
-                        <div class="btn-group btn-group-justified" role="group" role="group" aria-label="...">
-                          <a ng-href="{{vm.downloadUrls.hour}}" target="_blank" role="button" class="btn btn-primary"><i class="glyphicon glyphicon-download"></i> Última Hora</a>
-                          <a ng-href="{{vm.downloadUrls.day}}" target="_blank" role="button" class="btn btn-primary"><i class="glyphicon glyphicon-download"></i>  Último Día</a>
-                          <a ng-href="{{vm.downloadUrls.week}}" target="_blank" role="button" class="btn btn-success"><i class="glyphicon glyphicon-download"></i>  Última Semana</a>
-                          <a ng-href="{{vm.downloadUrls.month}}" target="_blank" role="button" class="btn btn-warning"><i class="glyphicon glyphicon-download"></i>  Último Mes</a>
-                           <a ng-href="{{vm.downloadUrls.all}}" target="_blank" role="button" class="btn btn-danger"><i class="glyphicon glyphicon-download"></i>  Todos los datos</a>
+                        <div class="row">
+                          <div class="btn-group btn-group-justified" role="group" role="group" aria-label="...">
+                            <a ng-href="{{vm.downloadUrls.hour}}" target="_blank" role="button" class="btn btn-primary"><i class="glyphicon glyphicon-download"></i> Última Hora</a>
+                            <a ng-href="{{vm.downloadUrls.day}}" target="_blank" role="button" class="btn btn-primary"><i class="glyphicon glyphicon-download"></i>  Último Día</a>
+                            <a ng-href="{{vm.downloadUrls.week}}" target="_blank" role="button" class="btn btn-success"><i class="glyphicon glyphicon-download"></i>  Última Semana</a>
+                            <a ng-href="{{vm.downloadUrls.month}}" target="_blank" role="button" class="btn btn-warning"><i class="glyphicon glyphicon-download"></i>  Último Mes</a>
+                             <a ng-href="{{vm.downloadUrls.all}}" target="_blank" role="button" class="btn btn-danger"><i class="glyphicon glyphicon-download"></i>  Todos los datos</a>
+                          </div>
                         </div>
+                        <h4>Exportar entre: <em>{{dt_from | date:'fullDate' }}</em> y <em>{{dt_to | date:'fullDate' }}</em></h4>
+                        <div class="row">
+                            <div class="col-md-5">
+                              <p class="input-group">
+                                <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt_from" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                              </p>
+                            </div>
 
+                            <div class="col-md-5">
+                              <p class="input-group">
+                                <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt_to" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                              </p>
+                            </div>
+                            <div class="col-md-2">
+                               <a ng-href="{{vm.downloadUrls.range}}" target="_blank" role="button" class="btn btn-danger"><i class="glyphicon glyphicon-download"></i>  Exportar datos</a>
+                            </div>
+                          </div>
                       </div>
                     </div>
                 </div>
