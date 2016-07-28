@@ -487,13 +487,103 @@
         vm.viewTimespan = newTimespan;
         vm.drawGraphFromTime();
       }
-      
+
+      function calcularTiempoTotalExcluyendoBaselines(sortedDataset){
+          var dataClusters = [];
+          var lastDataCluster = []; 
+          var baselineClusters = [];
+          var lastBaselineCluster = [];
+          var isCurrentlyADataStreak = true; 
+
+          sortedDataset.forEach(function(datapoint){
+            if( isCurrentlyADataStreak && !(datapoint.value_baseline || datapoint.value_baseline === 0) ){
+                lastDataCluster.push(datapoint);
+            }
+            else if( isCurrentlyADataStreak && (datapoint.value_baseline) ){
+                dataClusters.push(_.cloneDeep(lastDataCluster));
+                lastDataCluster = [];
+                isCurrentlyADataStreak = false;
+                lastBaselineCluster.push(datapoint);
+            }
+            else if( !isCurrentlyADataStreak && datapoint.value_baseline ){
+                lastBaselineCluster.push(datapoint);
+            }
+            else if( !isCurrentlyADataStreak && !(datapoint.value_baseline || datapoint.value_baseline === 0) ){
+                baselineClusters.push(_.cloneDeep(lastBaselineCluster));
+                lastBaselineCluster = [];
+                isCurrentlyADataStreak = true;
+                lastDataCluster.push(datapoint);
+            }
+          });
+
+          if(isCurrentlyADataStreak && lastDataCluster.length > 0){
+            dataClusters.push(lastDataCluster);
+          }
+          else if(!isCurrentlyADataStreak && lastBaselineCluster.length > 0){
+            baselineClusters.push(lastBaselineCluster);
+          }
+
+          var totalHours = 0;
+          var totalPoints = 0;
+          dataClusters.forEach(function(cluster){
+            totalHours += ( (new Date(_.last(cluster).datetime)).getTime() - (new Date(_.first(cluster).datetime)).getTime())/(60*60*1000);
+            totalPoints += cluster.length;
+          });
+
+          return {totalHours: totalHours,totalPoints:totalPoints};
+      }
+
+      function calcularDatapointTimeBasedOnClusters(onlyDatapoints){
+
+
+        var margen = 1000*60*2;
+
+        var dataClusters = [];
+        var lastDataCluster = []; 
+
+        var totalHours = 0;
+        var newCluster = 0;
+        onlyDatapoints.forEach(function(datapoint){
+          if(lastDataCluster.length == 0){
+            newCluster++;
+            return lastDataCluster.push(datapoint);
+          } 
+          //console.log( (new Date(datapoint.datetime)).getTime() - (new Date(_.last(lastDataCluster).datetime)).getTime(),margen);
+          if(  (new Date(datapoint.datetime)).getTime() - (new Date(_.last(lastDataCluster).datetime)).getTime() > margen){
+            dataClusters.push(_.cloneDeep(lastDataCluster));
+            lastDataCluster = [datapoint];
+            newCluster++;
+            
+          }else{
+            lastDataCluster.push(datapoint);
+          }
+        });
+        if(lastDataCluster.length > 0){
+          dataClusters.push(lastDataCluster);
+        }
+        
+        
+        dataClusters.forEach(function(cluster){
+          totalHours += ( (new Date(_.last(cluster).datetime)).getTime() - (new Date(_.first(cluster).datetime)).getTime())/(60*60*1000);
+          
+        });
+       
+        return totalHours;
+      }
+
       function calcular(dataset){
 
           var values =  _.reject(dataset, function(o) { return o.value_baseline || o.value_baseline === 0; });
           var dataObjArr = _.cloneDeep(values);
           var data = _.cloneDeep(values);
           var filteredData = [];
+
+          var datasetClone = _.cloneDeep(dataset);
+          var sortedByDateUnfilteredTimeData = _.sortBy(datasetClone,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
+          var totalHoursUnfiltered = calcularTiempoTotalExcluyendoBaselines(sortedByDateUnfilteredTimeData).totalHours;
+          var unfilteredProportion =  totalHoursUnfiltered/ calcularTiempoTotalExcluyendoBaselines(sortedByDateUnfilteredTimeData).totalPoints;
+          
+          /**
 
           var sortedByDateUnfilteredTimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
           if(_.last(sortedByDateUnfilteredTimeData)) {
@@ -503,6 +593,7 @@
           }
           var unfilteredProportion =  totalHoursUnfiltered/dataObjArr.length;
 
+          **/
           //console.log("UNFILTERED PROPORTION:",unfilteredProportion);
 
 
@@ -535,23 +626,16 @@
 
 
           //calcular el min y max con datos filtrados, no a los datos raw
-
           var sortedByDatetimeData = _.sortBy(filteredData,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
-
-          var averageTonelaje = _.sumBy(dataObjArr,'tonelaje')/dataObjArr.length;
-          
+          var averageTonelaje = _.sumBy(dataObjArr,'tonelaje')/dataObjArr.length;     
           var averageBaseline = getBaseline();
-            
 
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
-             totalHours = ( (new Date(_.last(sortedByDatetimeData).datetime)).getTime() - (new Date(_.first(sortedByDatetimeData).datetime)).getTime() )/(60*60*1000)
-           
+             totalHours = calcularDatapointTimeBasedOnClusters(sortedByDatetimeData);
       
           var freq = totalHours/dataset.length;
-          totalHours = totalHours * filtered.length;
-
-
+          totalHours = totalHours * unfilteredProportion;
 
           vm.filteredGrid.p10Value = percentil10;
           vm.filteredGrid.p90Value = percentil90;
@@ -562,7 +646,7 @@
           vm.filteredGrid.averageValue = averageValue;
           vm.filteredGrid.averageTonelaje = averageTonelaje;
           vm.filteredGrid.averageBaseline = averageBaseline;
-          vm.filteredGrid.freq = freq;
+          vm.filteredGrid.freq = unfilteredProportion;
           vm.filteredGrid.totalHours = totalHours;
          
 
@@ -571,7 +655,6 @@
             $log.error("isNaN(averageValue)",isNaN(averageValue),"isNaN(averageTonelaje)",isNaN(averageTonelaje),"isNaN(averageBaseline ",isNaN(averageBaseline),"isNaN(totalHours)",isNaN(totalHours));
             return 0;
           }
-  
 
           return 0;
       }
