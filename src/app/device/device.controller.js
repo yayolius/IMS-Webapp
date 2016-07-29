@@ -50,11 +50,6 @@
       };
 
 
-
-
-
-
-
       $scope.gauge = {
                           columns: 
                               [{
@@ -580,22 +575,9 @@
 
           var datasetClone = _.cloneDeep(dataset);
           var sortedByDateUnfilteredTimeData = _.sortBy(datasetClone,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
+          
           var totalHoursUnfiltered = calcularTiempoTotalExcluyendoBaselines(sortedByDateUnfilteredTimeData).totalHours;
           var unfilteredProportion =  totalHoursUnfiltered/ calcularTiempoTotalExcluyendoBaselines(sortedByDateUnfilteredTimeData).totalPoints;
-          
-          /**
-
-          var sortedByDateUnfilteredTimeData = _.sortBy(dataObjArr,'datetime' ,function(item){ (new Date(item.datetime)).getTime(); });
-          if(_.last(sortedByDateUnfilteredTimeData)) {
-           var totalHoursUnfiltered = ( (new Date(_.last(sortedByDateUnfilteredTimeData).datetime)).getTime() + (new Date(_.first(sortedByDateUnfilteredTimeData).datetime)).getTime())/(60*60*1000);
-          }else{
-            var totalHoursUnfiltered = 0;
-          }
-          var unfilteredProportion =  totalHoursUnfiltered/dataObjArr.length;
-
-          **/
-          //console.log("UNFILTERED PROPORTION:",unfilteredProportion);
-
 
           data = _.map(data, 'value');
           data = data.sort(function(a, b){return a-b; });
@@ -633,9 +615,10 @@
           var totalHours = 0;
           if(sortedByDatetimeData.length > 0 && _.last(sortedByDatetimeData).datetime && _.first(sortedByDatetimeData).datetime)
              totalHours = calcularDatapointTimeBasedOnClusters(sortedByDatetimeData);
-      
-          var freq = totalHours/dataset.length;
-          totalHours = totalHours * unfilteredProportion;
+          
+         
+          //var freq = totalHours/dataset.length;
+          totalHours = filtered.length * unfilteredProportion;
 
           vm.filteredGrid.p10Value = percentil10;
           vm.filteredGrid.p90Value = percentil90;
