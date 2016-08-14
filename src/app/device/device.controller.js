@@ -521,6 +521,7 @@
           var totalHours = 0;
           var totalPoints = 0;
           dataClusters.forEach(function(cluster){
+            if(cluster.length === 0) return;
             totalHours += ( (new Date(_.last(cluster).datetime)).getTime() - (new Date(_.first(cluster).datetime)).getTime())/(60*60*1000);
             totalPoints += cluster.length;
           });
