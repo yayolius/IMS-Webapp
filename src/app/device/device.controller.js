@@ -222,7 +222,7 @@
         //angular.element("#last-time-chart").text("cargando");
         DeviceService.GetDataPointsFromDate(vm.device.id, vm.viewTimespan ).then(function(response){
           
-          console.log(response);
+
           vm.mainGrid.data = response;
           vm.originalDatapoints = _.cloneDeep(response);
           vm.datapoints = response;
@@ -384,7 +384,7 @@
             
             
             vm.deviceGraph  = $('#time-chart').highcharts(vm.deviceGraphOptions);
-            console.log(vm.deviceGraph);
+
           }
           else if(vm.deviceGraph && vm.datapoints.length > 0){
             var chart = vm.deviceGraph.highcharts();    
@@ -600,6 +600,13 @@
             } 
           }
 
+          if(filtered.length === 0){
+            for(var index in data){
+              var s = data[index];
+              filtered.push(s);
+              filteredData.push(dataObjArr[index]);
+            }
+          }
           var sum = 0;
           filtered.forEach(function(item){
             sum = item + sum;
